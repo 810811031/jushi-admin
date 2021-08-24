@@ -15,13 +15,68 @@
                 <el-dropdown-item command="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
         </el-dropdown>
+        <el-dialog
+            title="提示"
+            :visible.sync="dialog.show"
+            :modal="false"
+            width="25%">
+            <el-form v-model="form" label-width="70px">
+                <el-form-item label="旧密码">
+                    <el-input size="small" v-model="form.oldPassword" placeholder="请输入旧密码" />
+                </el-form-item>
+                <el-form-item label="新密码">
+                    <el-input size="small" v-model="form.newPassword" placeholder="请输入新密码" />
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button size="small" @click="dialog.show = false">取 消</el-button>
+                <el-button size="small" type="primary" @click="handleEditPassword" :loading="dialog.loading">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
+import { EditPassword } from '@/api'
+
 export default {
     name: "COMPONENT_HEADER",
+    data: function () {
+        return {
+            dialog: {
+                show: false,
+                loading: false
+            },
+            form: {
+                oldPassword: '',
+                newPassword: ''
+            }
+        }
+    },
     methods: {
+        /**
+         * 确认修改密码并上传
+         */
+        handleEditPassword: function () {
+            const { oldPassword, newPassword } = this.form
+            if (!oldPassword) return this.$message.error('请填写旧密码')
+            if (!newPassword) return this.$message.error('请填写新密码')
+
+            this.dialog.loading = true
+            const param = {
+                OldPass: oldPassword,
+                NewPass: newPassword
+            }
+            EditPassword(param)
+                .then(res => {
+                    this.$message.success(res.data)
+                    this.dialog.loading = false
+                    this.form.oldPassword = ''
+                    this.form.newPassword = ''
+                    this.dialog.show = false
+                })
+                .catch(() => {})
+        },
         /**
          * 点击下拉菜单
          */
@@ -39,7 +94,8 @@ export default {
                 type: 'error'
             })
             .then(() => {
-
+                sessionStorage.getItem('token') && sessionStorage.removeItem('token')
+                this.$router.push('/login')
             })
             .catch(() => {})
         },
@@ -47,7 +103,7 @@ export default {
          * 点击修改密码
          */
         handleChangePassword: function () {
-            this.$message.error('敬请期待')
+            this.dialog.show = true
         }
     }
 }

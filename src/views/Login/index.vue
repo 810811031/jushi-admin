@@ -11,14 +11,14 @@
                 欢迎访问官网网站管理后台
             </div>
             <el-input v-model="user.username" prefix-icon="el-icon-user" placeholder="请填写用户名" style="margin-bottom: 20px" />
-            <el-input v-model="user.password" prefix-icon="el-icon-unlock" placeholder="请填写密码" />
+            <el-input v-model="user.password" type="password" prefix-icon="el-icon-unlock" placeholder="请填写密码" />
             <el-button type="primary" style="margin-top: 30px; width: 100%" @click="handleSignIn">登录</el-button>
         </div>
     </div>
 </template>
 
 <script>
-import { Login } from '@/api'
+import { Login, addToken } from '@/api'
 
 export default {
     name: 'PAGE_LOGIN',
@@ -30,6 +30,11 @@ export default {
             }
         }
     },
+    created: function () {
+        if (sessionStorage.getItem('info')) {
+            this.user = JSON.parse(sessionStorage.getItem('info'))
+        }
+    },
     methods: {
         /**
          * 点击登录
@@ -39,10 +44,11 @@ export default {
             if (!this.user.password) return this.$message.error('请输入密码')
             Login(this.user)
                 .then(res => {
-                    console.log(res)
-                })
-                .catch(err => {
-                    console.log(err)
+                    if (!res.data) return
+                    sessionStorage.setItem('info', JSON.stringify(this.user))
+                    sessionStorage.setItem('token', res.data.split(' ')[1])
+                    addToken(res.data)
+                    this.$router.push('/main/global-setting')
                 })
         }
     }
