@@ -7,33 +7,41 @@
                         <el-form-item label="网站名称:">
                             <el-input v-model="form.Title" size="small" class="input-width" placeholder="请输入网站名称" />
                         </el-form-item>
-                        <el-form-item label="备案号码:">
+                        <el-form-item label="底部说明:">
                             <el-input v-model="form.Footer" size="small" class="input-width" placeholder="请输入备案号码" />
                         </el-form-item>
-                        <el-form-item label="QQ:">
-                            <el-input v-model="form.QQ" size="small" class="input-width" placeholder="请输入网站网址" />
+                        <el-form-item label="ICP:">
+                            <el-input v-model="form.ICP" size="small" class="input-width" placeholder="请输入网站网址" />
                         </el-form-item>
-                        <el-form-item label="WX:">
-                            <el-input v-model="form.WX" size="small" class="input-width" placeholder="请输入网站网址" />
+                        <el-form-item label="Icon:">
+                            <div class="cover" @click="handleClickInput('Icon')" v-if="!form.Icon">
+                                <i class="el-icon-plus"></i>
+                            </div>
+                            <div class="cover1" v-else style="background: #e8e8e8;">
+                                <img style="width: 100%;" :src="form.Icon" />
+                                <el-button @click="handleDeleteImage('Icon')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
+                            </div>
+                            <input @change="handleChangeFile('Icon')" type="file" accept="image/*" ref="Icon" style="display: none;" />
                         </el-form-item>
-                        <el-form-item label="开启新闻:">
-                            <el-switch
-                                :value="form.IsNews"
-                                @change="val => handleChange(val, 'IsNews')"
-                                active-color="#13ce66"
-                                inactive-color="#ff4949">
-                            </el-switch>
+                        <el-form-item label="Logo(亮):">
+                            <div class="cover" @click="handleClickInput('LogoLight')" v-if="!form.LogoLight">
+                                <i class="el-icon-plus"></i>
+                            </div>
+                            <div class="cover1" v-else style="background: #e8e8e8;">
+                                <img style="width: 100%;" :src="form.LogoLight" />
+                                <el-button @click="handleDeleteImage('LogoLight')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
+                            </div>
+                            <input @change="handleChangeFile('LogoLight')" type="file" accept="image/*" ref="LogoLight" style="display: none;" />
                         </el-form-item>
-                        <el-form-item label="开启工程案例:">
-                            <el-switch
-                                :value="form.IsCase"
-                                @change="val => handleChange(val, 'IsCase')"
-                                active-color="#13ce66"
-                                inactive-color="#ff4949">
-                            </el-switch>
-                        </el-form-item>
-                        <el-form-item label="地址栏icon:">
-
+                        <el-form-item label="Logo(暗):">
+                            <div class="cover" @click="handleClickInput('LogoDark')" v-if="!form.LogoDark">
+                                <i class="el-icon-plus"></i>
+                            </div>
+                            <div class="cover1" v-else style="background: #e8e8e8;">
+                                <img style="width: 100%;" :src="form.LogoDark" />
+                                <el-button @click="handleDeleteImage('LogoDark')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
+                            </div>
+                            <input @change="handleChangeFile('LogoDark')" type="file" accept="image/*" ref="LogoDark" style="display: none;" />
                         </el-form-item>
                     </el-form>
                     <div class="btns">
@@ -61,6 +69,7 @@
 </template>
 
 <script>
+// saveBaseInfo
 import { getBaseInfo, saveBaseInfo } from '@/api'
 
 export default {
@@ -69,14 +78,14 @@ export default {
         return {
             activeName: 'base',
             form: {
-                Title: '',
                 Footer: '',
-                SeoKeyword: '',
-                SeoDescription: '',
-                QQ: '',
-                WX: '',
-                IsCase: false,
-                IsNews: false
+                ICP: '',
+                Icon: '',
+                LogoDark: '',
+                LogoLight: '',
+                SeoDescription: "",
+                SeoKeyword: "",
+                Title: ""
             }
         }
     },
@@ -85,9 +94,37 @@ export default {
     },
     methods: {
         /**
+         * 选择上传图片
+         * @param { string } name ref name
+         */
+        handleClickInput: function(name) {
+            this.$refs[name].click()
+        },
+        /**
+         * 删除图片
+         * @param { string } name ref name
+         */
+        handleDeleteImage: function (name) {
+            this.form[name] = ''
+            this.$refs[name].value = ''
+        },
+        /**
+         * 修改图片上传
+         * @param { string } name ref name
+         */
+        handleChangeFile: function (name) {
+            const file = this.$refs[name].files[0]
+            let reader = new FileReader(), that = this
+            reader.onload = function () {
+                that.form[name] = reader.result
+            }
+            reader.readAsDataURL(file)
+        },
+        /**
          * 保存基本信息
          */
         handleSaveBase: function() {
+            console.log(this.form)
             saveBaseInfo(this.form)
                 .then(res => {
                     console.log(res)
@@ -100,22 +137,10 @@ export default {
         getBaseInfo: function () {
             getBaseInfo()
                 .then(res => {
-                    const { Title, Footer, SeoKeyword, SeoDescription, QQ, WX, IsNews, IsCase } = res.data
                     console.log(res)
-                    this.form.Title = Title
-                    this.form.Footer = Footer
-                    this.form.SeoKeyword = SeoKeyword
-                    this.form.SeoDescription = SeoDescription
-                    this.form.QQ = QQ
-                    this.form.WX = WX
-                    this.form.IsNews = IsNews == 1
-                    this.form.IsCase = IsCase == 1
-                    console.log(this.form)
+                    this.form = res.data
                 })
                 .catch(() => {})
-        },
-        handleChange: function (val, type) {
-            this.form[type] = val
         },
     }
 }
@@ -125,7 +150,7 @@ export default {
 .globalSetting {
     width: 100%;
     .input-width {
-        width: 400px;
+        width: 600px;
     }
     .btns {
         text-align: center;
@@ -136,6 +161,33 @@ export default {
         padding: 20px;
         box-sizing: border-box;
         border: 1px solid #ddd;
+        .cover {
+            width: 130px;
+            height: 130px;
+            box-sizing: border-box;
+            border: 1px dashed #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            vertical-align: top;
+        }
+        .cover1 {
+            position: relative;
+            width: 130px;
+            height: 130px;
+            vertical-align: top;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            .delete {
+                position: absolute;
+                right: -10px;
+                top: -10px;
+            }
+        }
     }
 }
 </style>

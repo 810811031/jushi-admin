@@ -84,6 +84,40 @@ export function saveBaseInfo(param) {
     return axios.post(host + '/manage/site', param)
 }
 
+// --------------------------------------    banner 管理
+
+/**
+ * 获取 banner 图片
+ */
+export function getBannerList() {
+    return axios.get(host + '/manage/banner')
+}
+
+/**
+ * 新建 banner 图
+ * @param {*} param 
+ */
+export function createBanner(param) {
+    return axios.post(host + '/manage/banner', param)
+}
+
+/**
+ * 更新 banner
+ * @param {*} id 
+ * @param {*} param 
+ */
+export function updateBanner(id, param) {
+    return axios.post(host + '/manage/banner/' + id, param)
+}
+
+/**
+ * 删除 banner 
+ * @param {*} id 
+ */
+export function deleteBanner(id) {
+    return axios.post(host + '/manage/banner/' + id)
+}
+
 // --------------------------------------    招聘管理
 
 /**
