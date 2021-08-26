@@ -148,6 +148,15 @@ export function updateMenu(id, param) {
 }
 
 /**
+ * 调整菜单顺序
+ * @param {*} id 
+ * @param {*} param 
+ */
+export function changeMenuIndex(id, param) {
+    return axios.post(host + '/manage/menu-num/' + id, param)
+}
+
+/**
  * 删除菜单
  * @param {*} id 
  * @returns 
@@ -201,17 +210,16 @@ export function deleteOffers(id) {
  * @returns 
  */
 export function getProductGroup() {
-    return axios.get(host + '/manage')
+    return axios.get(host + '/manage/categories')
 }
 
 /**
  * 创建产品类目管理
- * @param {*} id 
  * @param {*} param 
  * @returns 
  */
 export function createProductGroup(param) {
-    return axios.post(host + '/manage', param)
+    return axios.post(host + '/manage/category', param)
 }
 
 /**
@@ -358,8 +366,8 @@ export function deleteCases(id) {
  * @param {*} param 
  * @returns 
  */
-export function getProducts(param) {
-    return axios.get('/manage/products', param)
+export function getProducts(page) {
+    return axios.get(host + `/manage/products?page=${ page }`)
 }
 
 /**

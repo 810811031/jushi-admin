@@ -1,219 +1,128 @@
 <template>
     <div class="productSetting">
-        <el-tabs v-model="activeName">
-            <el-tab-pane label="产品类目管理" name="manage">
-                <div class="content">
-                    <div class="btns normal">
-                        <el-button type="primary" size="small" @click="dialog.show = true">添加分类</el-button>
-                    </div>
-                    <el-table :data="manageTable.data" border>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="产品分类名称"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="分类ID"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="类目层级"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="产品数量"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="创建时间"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="操作"
-                        >
-                            <template slot-scope="scope"> 
-                                <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                                <el-button size="small" type="info" @click="handleConfig(scope.row)">配置SEO</el-button>
-                                <el-button size="small" type="delete" @click="handleDelete(scope.row)">删除</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <div class="footer">
-                        <el-pagination
-                            background
-                            layout="prev, pager, next, total"
-                            :total="1000">
-                        </el-pagination>
-                    </div>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="产品列表" name="list">
-                <div class="content">
-                    <div class="btns normal">
-                        <el-button type="primary" size="small">添加产品</el-button>
-                    </div>
-                    <el-table :data="ListTable.data" border>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="产品名称"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="产品ID"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="产品副名称"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="所属产品类型"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="产品缩略图"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="细分类型数量"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="创建时间"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="更新时间"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="排序时间"
-                        ></el-table-column>
-                        <el-table-column
-                            prop=""
-                            align="center"
-                            label="操作"
-                        >
-                            <template slot-scope="scope"> 
-                                <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-                                <el-button size="small" type="info" @click="handleConfig(scope.row)">配置SEO</el-button>
-                                <el-button size="small" type="delete" @click="handleDelete(scope.row)">删除</el-button>
-                            </template>
-                        </el-table-column>
-                    </el-table>
-                    <div class="footer">
-                        <el-pagination
-                            background
-                            layout="prev, pager, next, total"
-                            :total="1000">
-                        </el-pagination>
-                    </div>
-                </div>
-            </el-tab-pane>
-        </el-tabs>
+        <div class="btns normal">
+            <el-button type="primary" size="small" @click="dialog.show = true">添加产品</el-button>
+        </div>
+        <div class="content">
+            <el-table :data="table.data" border>
 
+            </el-table>
+        </div>
         <el-dialog
-            title="添加菜单"
+            title="添加产品"
             :modal="false"
+            :fullscreen="true"
             :visible.sync="dialog.show"
-            width="30%">
-            <el-form :model="dialog.form" label-width="140px">
-                <el-form-item label="类型名称：">
-                    <el-input v-model="dialog.form.type" size="small" placeholder="选择类目层级"></el-input>
-                </el-form-item>
-                <el-form-item label="所属母分类：">
-                    <el-input v-model="dialog.form.type1" size="small" placeholder="选择所属分类"></el-input>
-                </el-form-item>
-                <el-form-item label="子分类名称：">
-                    <el-input v-model="dialog.form.type2" size="small" placeholder="输入分类名称"></el-input>
-                </el-form-item>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
+            width="620px">
+            
+            <span slot="footer" class="dialog-footer" style="text-align: center !important;">
                 <el-button size="small" @click="handleCancel">取 消</el-button>
-                <el-button size="small" type="primary" @click="handleSubmit">确 定</el-button>
+                <el-button size="small" type="primary" @click="handleSendRequest">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- <div class="content">
+            
+            <el-table :data="manageTable.data" border>
+                <el-table-column
+                    prop=""
+                    align="center"
+                    label="产品分类名称"
+                ></el-table-column>
+                <el-table-column
+                    prop=""
+                    align="center"
+                    label="分类ID"
+                ></el-table-column>
+                <el-table-column
+                    prop=""
+                    align="center"
+                    label="类目层级"
+                ></el-table-column>
+                <el-table-column
+                    prop=""
+                    align="center"
+                    label="产品数量"
+                ></el-table-column>
+                <el-table-column
+                    prop=""
+                    align="center"
+                    label="创建时间"
+                ></el-table-column>
+                <el-table-column
+                    prop=""
+                    align="center"
+                    label="操作"
+                >
+                    <template slot-scope="scope"> 
+                        <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+                        <el-button size="small" type="info" @click="handleConfig(scope.row)">配置SEO</el-button>
+                        <el-button size="small" type="delete" @click="handleDelete(scope.row)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="footer">
+                <el-pagination
+                    background
+                    layout="prev, pager, next, total"
+                    :total="1000">
+                </el-pagination>
+            </div>
+        </div>
+        </el-dialog> -->
     </div>
 </template>
 
 <script>
+import { getProducts } from '@/api'
+
 export default {
     name: 'PAGE_ProductSetting',
     data: function () {
         return {
             activeName: 'manage',
-            manageTable: {
+            table: {
                 data: [],
-                total: 0,
-                size: 10,
                 current: 1,
-                loading: false
-            },
-            ListTable: {
-                data: [],
-                total: 0,
-                size: 10,
-                current: 1,
-                loading: false
+                total: 0
             },
             dialog: {
-                show: false,
+                show: true,
                 form: {
                     type: '',
                     type1: '',
                     type2: ''
                 }
-            }
+            },
+            
         }
+    },
+    created: function () {
+        this.getTableData()
     },
     methods: {
         /**
-         * 修改单条记录
-         * @param { Object } row 
+         * 发送请求至服务器
          */
-        handleEdit: function (row) {
-            console.log(row)
+        handleSendRequest: function () {
+
         },
         /**
-         * 配置 SEO 
-         * @param { Object } row 
-         */
-        handleConfig: function (row) {
-            console.log(row)
-        },
-        /**
-         * 删除词条类目
-         * @param { Object } row 
-         */
-        handleDelete: function (row) {
-            console.log(row)
-        },
-        /**
-         * 取消添加产品类目
+         * 取消新建产品
          */
         handleCancel: function () {
             this.dialog.show = false
+
         },
         /**
-         * 提交创建菜单
+         * 获取列表数据
          */
-        handleSubmit: function() {
-
+        getTableData: function () {
+            getProducts(this.table.current)
+                .then(res => {
+                    console.log(res)
+                    this.table.data = res.data.list
+                    this.table.total = res.data.pageTotal
+                })
         }
     }
 }
@@ -222,9 +131,11 @@ export default {
 <style lang="scss" scoped>
 .productSetting {
     width: 100%;
+    box-sizing: border-box;
     .btns {
         text-align: center;
         margin-top: 30px;
+        padding-top: 20px;
     }
     .normal {
         text-align: left;

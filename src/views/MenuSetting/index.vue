@@ -13,28 +13,33 @@
                     >
                 </el-table-column>
                 <el-table-column
-                    prop="text"
+                    prop="Title"
                     label="菜单名称（中文）"
                     align="center"
                     >
                 </el-table-column>
                 <el-table-column
-                    prop="text1"
+                    prop="TitleEn"
                     label="菜单名称（英文）"
                     align="center"
                     >
                 </el-table-column>
                 <el-table-column
-                    prop="index"
                     label="菜单顺序"
                     align="center"
                     >
+                    <template slot-scope="scope">
+                        <div style="cursor: pointer;" v-if="!scope.row.show" @click="handleShowInput(scope.row)">{{ scope.row.Num }}</div>
+                        <el-input size="small"  @blur="handleChangeNum(scope.row)" v-model="scope.row.Num" v-else placeholder="请输入顺序编号" />
+                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop="status"
                     label="状态"
                     align="center"
                     >
+                    <template slot-scope="scope">
+                        {{ scope.row.Status == 0 ? '默认菜单' : '自定义菜单' }}
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="6"
@@ -44,13 +49,11 @@
                     <template slot-scope="scope">
                         <el-button size="mini" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-                        <el-button size="mini" type="info" circle icon="el-icon-top"></el-button>
-                        <el-button size="mini" type="info" circle icon="el-icon-bottom"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
-            <div class="line"></div>
-            <el-form :model="form" label-width="150px">
+            <!-- <div class="line"></div> -->
+            <!-- <el-form :model="form" label-width="150px">
                 <el-form-item label="关于我们：">
                     <el-input type="textarea" :rows="7" 
                         v-model="form.aboutUs" size="small"
@@ -70,10 +73,10 @@
                 <el-form-item label="合作伙伴logo：">
 
                 </el-form-item>
-            </el-form>
-            <div class="footer">
+            </el-form> -->
+            <!-- <div class="footer">
                 <el-button type="primary" size="small">保存</el-button>
-            </div>
+            </div> -->
         </div>
 
         <el-dialog
@@ -97,7 +100,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button size="small" @click="handleCancel">取 消</el-button>
-                <el-button size="small" type="danger" @click="handleSubmit">确 定</el-button>
+                <el-button size="small" type="primary" @click="handleSubmit">确 定</el-button>
             </span>
         </el-dialog>
 
@@ -105,36 +108,14 @@
 </template>
 
 <script>
-import { getMenuList, createMenu, updateMenu, deleteMenu } from '@/api'
+import { getMenuList, createMenu, updateMenu, deleteMenu, changeMenuIndex } from '@/api'
 
 export default {
     name: 'PAGE_MenuSetting',
     data: function () {
         return {
             table: {
-                data: [
-                    {
-                        text: '首页',
-                        text1: 'Home',
-                        index: 1,
-                        status: '默认菜单',
-                        No: 1
-                    },
-                    {
-                        text: '产品中心',
-                        text1: 'Product list',
-                        index: 2,
-                        status: '默认菜单',
-                        No: 2
-                    },
-                    {
-                        text: '解决方案与应用',
-                        text1: 'Equipment customization',
-                        index: 3,
-                        status: '默认菜单',
-                        No: 3
-                    }
-                ],
+                data: [],
                 loading: false
             },
             dialog: {
@@ -161,18 +142,43 @@ export default {
     },
     methods: {
         /**
+         * 改变当前菜单的顺序
+         * @param {*} row
+         */
+        handleShowInput: function(row) {
+            row.show = !row.show
+        },
+        /**
+         * 改变当前菜单的顺序
+         * @param {*} row
+         */
+        handleChangeNum: function (row) {
+            row.show = !row.show
+            changeMenuIndex(row.ID, { Num: Number(row.Num) })
+                .then(res => {
+                    this.$message.success(res.data)
+                    this.getTableData()
+                })
+        },
+        /**
          * 点击修改
          * @param { Object } row 单列数据
          */
         handleEdit: function (row) {
-            console.log(row)
+            this.dialog.form = {
+                Title: row.Title,
+                TitleEn: row.TitleEn,
+                Desc: row.Desc,
+                Txt: row.Txt,
+                ID: row.ID
+            }
+            this.dialog.show = true
         },
         /**
          * 点击删除
          * @param { Object } row 单列数据
          */
         handleDelete: function (row) {
-            console.log(row)
             this.$confirm('是否删除此菜单？', '提示', {
                 confirmButtonText: '删除',
                 cancelButtonText: '取消',
@@ -180,8 +186,9 @@ export default {
             })
             .then(() => {
                 deleteMenu(row.ID)
-                    .then(res => {
-                        console.log(res)
+                    .then(() => {
+                        this.$message.success('删除成功')
+                        this.getTableData()
                     })
             })
             .catch(() => {})
@@ -205,13 +212,14 @@ export default {
         handleSubmit: function () {
             let result = false
             Object.keys(this.dialog.form).forEach(key => {
-                if (this.dialog.form[key] == '') result = true
+                if (typeof this.dialog.form[key] == 'string' && this.dialog.form[key] == '') {
+                    result = true
+                }
             })
             if (result) return this.$message.error('请填写完整后提交')
             if (this.dialog.form.ID) {
                 updateMenu(this.dialog.form.ID, this.dialog.form)
-                    .then(res => {
-                        console.log(res)
+                    .then(() => {
                         this.dialog.form = {
                             Title: '',
                             TitleEn: '',
@@ -219,13 +227,13 @@ export default {
                             Txt: '',
                             ID: 0
                         }
-                        this.dialog.form.show = false
+                        this.dialog.show = false
+                        this.$message.success('更新菜单成功')
                         this.getTableData()
                     })
             } else {
                 createMenu(this.dialog.form)
-                    .then(res => {
-                        console.log(res)
+                    .then(() => {
                         this.dialog.form = {
                             Title: '',
                             TitleEn: '',
@@ -233,7 +241,8 @@ export default {
                             Txt: '',
                             ID: 0
                         }
-                        this.dialog.form.show = false
+                        this.dialog.show = false
+                        this.$message.success('添加菜单成功')
                         this.getTableData()
                     })
             }
@@ -245,7 +254,11 @@ export default {
         getTableData: function () {
             getMenuList()
                 .then(res => {
-                    console.log(res)
+                    res.data.forEach((item, index) => {
+                        item.No = index + 1
+                        item.show = false
+                    })
+                    this.table.data = res.data
                 })
         }
     }
