@@ -83,13 +83,16 @@
             width="30%">
             <el-form :model="dialog.form" label-width="140px">
                 <el-form-item label="菜单名称（中文）：">
-                    <el-input v-model="dialog.form.text" size="small" placeholder="请填写中文名称"></el-input>
+                    <el-input v-model="dialog.form.Title" size="small" placeholder="请填写中文名称"></el-input>
                 </el-form-item>
                 <el-form-item label="菜单名称（英文）：">
-                    <el-input v-model="dialog.form.text1" size="small" placeholder="请填写英文名称"></el-input>
+                    <el-input v-model="dialog.form.TitleEn" size="small" placeholder="请填写英文名称"></el-input>
                 </el-form-item>
-                <el-form-item label="页面类型：">
-                    <p>默认文本类型</p>
+                <el-form-item label="辅助说明文字：">
+                    <el-input v-model="dialog.form.Desc" size="small" placeholder="请填写辅助说明文字"></el-input>
+                </el-form-item>
+                <el-form-item label="页面描述文字：">
+                    <el-input v-model="dialog.form.Txt" size="small" placeholder="请填写页面描述文字"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -102,6 +105,8 @@
 </template>
 
 <script>
+import { getMenuList, createMenu, updateMenu, deleteMenu } from '@/api'
+
 export default {
     name: 'PAGE_MenuSetting',
     data: function () {
@@ -135,8 +140,11 @@ export default {
             dialog: {
                 show: false,
                 form: {
-                    text: '',
-                    text1: ''
+                    Title: '',
+                    TitleEn: '',
+                    Desc: '',
+                    Txt: '',
+                    ID: 0
                 }
             },
             form: {
@@ -147,6 +155,9 @@ export default {
 
             }
         }
+    },
+    created: function () {
+        this.getTableData()
     },
     methods: {
         /**
@@ -168,7 +179,10 @@ export default {
                 type: 'error'
             })
             .then(() => {
-
+                deleteMenu(row.ID)
+                    .then(res => {
+                        console.log(res)
+                    })
             })
             .catch(() => {})
         },
@@ -177,12 +191,62 @@ export default {
          */
         handleCancel: function () {
             this.dialog.show = false
+            this.dialog.form = {
+                Title: '',
+                TitleEn: '',
+                Desc: '',
+                Txt: '',
+                ID: 0
+            }
         },
         /**
          * 点击新建菜单
          */
         handleSubmit: function () {
-            console.log(1234)
+            let result = false
+            Object.keys(this.dialog.form).forEach(key => {
+                if (this.dialog.form[key] == '') result = true
+            })
+            if (result) return this.$message.error('请填写完整后提交')
+            if (this.dialog.form.ID) {
+                updateMenu(this.dialog.form.ID, this.dialog.form)
+                    .then(res => {
+                        console.log(res)
+                        this.dialog.form = {
+                            Title: '',
+                            TitleEn: '',
+                            Desc: '',
+                            Txt: '',
+                            ID: 0
+                        }
+                        this.dialog.form.show = false
+                        this.getTableData()
+                    })
+            } else {
+                createMenu(this.dialog.form)
+                    .then(res => {
+                        console.log(res)
+                        this.dialog.form = {
+                            Title: '',
+                            TitleEn: '',
+                            Desc: '',
+                            Txt: '',
+                            ID: 0
+                        }
+                        this.dialog.form.show = false
+                        this.getTableData()
+                    })
+            }
+
+        },
+        /**
+         * 获取菜单列表
+         */
+        getTableData: function () {
+            getMenuList()
+                .then(res => {
+                    console.log(res)
+                })
         }
     }
 }

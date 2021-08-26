@@ -27,19 +27,29 @@ export default {
                     icon: 'el-icon-s-tools'
                 },
                 {
-                    routeName: 'MenuSetting',
-                    label: '菜单设置',
-                    icon: 'el-icon-menu'
-                },
-                {
                     routeName: 'BannerSetting',
                     label: '首页banner设置',
                     icon: 'el-icon-s-platform'
                 },
                 {
+                    routeName: 'MenuSetting',
+                    label: '菜单设置',
+                    icon: 'el-icon-menu'
+                },
+                {
                     routeName: 'ProductSetting',
                     label: '产品设置',
                     icon: 'el-icon-s-order'
+                },
+                {
+                    routeName: 'ProductGroupSetting',
+                    label: '产品类目管理',
+                    icon: 'el-icon-collection'
+                },
+                {
+                    routeName: 'ProductTypeSetting',
+                    label: '产品型号管理',
+                    icon: 'el-icon-notebook-2'
                 },
                 {
                     routeName: 'ProgrammeSetting',

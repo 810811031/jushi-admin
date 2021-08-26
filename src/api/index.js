@@ -118,6 +118,44 @@ export function deleteBanner(id) {
     return axios.post(host + '/manage/banner/' + id)
 }
 
+// --------------------------------------    菜单管理
+
+/**
+ * 获取菜单列表
+ * @returns 
+ */
+export function getMenuList() {
+    return axios.get(host + '/manage/menus')
+}
+
+/**
+ * 新建菜单
+ * @param {*} param 
+ * @returns 
+ */
+export function createMenu(param) {
+    return axios.post(host + '/manage/menu', param)
+}
+
+/**
+ * 更新菜单
+ * @param {*} id 
+ * @param {*} param 
+ * @returns 
+ */
+export function updateMenu(id, param) {
+    return axios.post(host + '/manage/menu/' + id, param)
+}
+
+/**
+ * 删除菜单
+ * @param {*} id 
+ * @returns 
+ */
+export function deleteMenu(id) {
+    return axios.delete(host + '/manage/menu/' + id)
+}
+
 // --------------------------------------    招聘管理
 
 /**
@@ -154,6 +192,45 @@ export function updateOffers(id, param) {
  */
 export function deleteOffers(id) {
     return axios.delete(host + '/manage/offer/' + id)
+}
+
+// --------------------------------------    产品类目管理 
+
+/**
+ * 获取产品类目信息
+ * @returns 
+ */
+export function getProductGroup() {
+    return axios.get(host + '/manage')
+}
+
+/**
+ * 创建产品类目管理
+ * @param {*} id 
+ * @param {*} param 
+ * @returns 
+ */
+export function createProductGroup(param) {
+    return axios.post(host + '/manage', param)
+}
+
+/**
+ * 更新产品类目管理
+ * @param {*} id 
+ * @param {*} param 
+ * @returns 
+ */
+export function updateProductGroup(id, param) {
+    return axios.post(host + '/manage' + id, param)
+}
+
+/**
+ * 删除产品类目
+ * @param {*} id 
+ * @returns 
+ */
+export function deleteProductGroup(id) {
+    return axios.delete(host + '/manage' + id)
 }
 
 // --------------------------------------     解决方案
