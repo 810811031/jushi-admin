@@ -231,18 +231,32 @@ export default {
          */
         handleCancelProf: function () {
             this.dialog1.show = false
+            this.formProf = {
+                Title: '',
+                Txt: '',
+                Cover: '',
+                SeoKeyword: '',
+                SeoDescription: ''
+            }
         },
         /**
          * 创建工程案例
          */
         handleCreateProf: function () {
-
+            
         },
         /**
          * 取消创建新闻
          */
         handleCancelNews: function () {
             this.dialog2.show = false
+            this.formNews = {
+                Title: '',
+                Txt: '',
+                Cover: '',
+                SeoKeyword: '',
+                SeoDescription: ''
+            }
         },
         /**
          * 创建新闻
