@@ -5,15 +5,19 @@
         </div>
 
         <div class="content">
-            <el-table border :data="table.data">
+            <el-table border :data="table.data" row-key="ID"
+                :tree-props="{ children: 'Children', hasChildren: 'Level'}"
+                >
                 <el-table-column
                     prop="ID"
                     label="产品类目ID"
                     align="center"
+                    width="80"
                     ></el-table-column>
                 <el-table-column
                     prop="ParentID"
                     label="产品父级类目ID"
+                    width="80"
                     align="center"
                     ></el-table-column>
                 <el-table-column
@@ -22,21 +26,30 @@
                     align="center"
                     ></el-table-column>
                 <el-table-column
-                    prop="SeoKeyword"
                     label="Seo关键字"
                     align="center"
-                    ></el-table-column>
+                    >
+                        <template slot-scope="scope">
+                            {{ scope.row.SeoKeyword == '' ? '无' : scope.row.SeoKeyword }}
+                        </template>
+                    </el-table-column>
                 <el-table-column
-                    prop="SeoDescription"
                     label="Seo关键字描述"
                     align="center"
-                    ></el-table-column>
+                    >
+                        <template slot-scope="scope">
+                            {{ scope.row.SeoDescription == '' ? '无' : scope.row.SeoDescription }}
+                        </template>
+                    </el-table-column>
                 <el-table-column
                     label="操作"
                     align="center"
+                    width="280"
                     >
                     <template slot-scope="scope">
+                        <el-button type="primary" size="small" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button type="warning" size="small" @click="handleConfigSeo(scope.row)">配置seo</el-button>
+                        <el-button type="danger" size="small" @click="handleDelete(scope.row)" >删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -50,7 +63,7 @@
             <el-form :model="dialog.form" label-width="80px">
                 <el-form-item label="父级菜单">
                     <div style="height: 8px"></div>
-                    <el-tree :data="tree" accordion :default-checked-keys="currentNodeKey"
+                    <el-tree :data="tree" :default-checked-keys="currentNodeKey"
                         highlight-current
                         :props="defaultProps" @node-click="handleNodeClick"></el-tree>
                 </el-form-item>
@@ -63,11 +76,36 @@
                 <el-button size="small" type="primary" @click="handleSendRequest">确 定</el-button>
             </span>
         </el-dialog>
+
+        <el-dialog
+            title="Seo配置"
+            :visible.sync="dialogSeo.show"
+            :modal="false"
+            width="30%">
+            <el-form :model="dialogSeo.form" label-width="100px">
+                <el-form-item label="关键字">
+                    <el-input size="small" placeholder="关键字" v-model="dialogSeo.form.SeoKeyword" />
+                </el-form-item>
+                <el-form-item label="关键字描述">
+                    <el-input size="small" placeholder="关键字描述" v-model="dialogSeo.form.SeoDescription" />
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button size="small" @click="handleCancel">取 消</el-button>
+                <el-button size="small" type="primary" @click="handleSendSeoRequest">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { getProductGroup, createProductGroup } from '@/api'
+import { 
+    getProductGroup, 
+    createProductGroup, 
+    updateProductGroup, 
+    deleteProductGroup,
+    changeProductGroupConfig 
+} from '@/api'
 
 export default {
     name: 'PAGE_ProductGroupSetting',
@@ -77,7 +115,16 @@ export default {
                 show: false,
                 form: {
                     Name: '',
-                    ParentID: 0
+                    ParentID: 0,
+                    ID: 0,
+                }
+            },
+            dialogSeo: {
+                show: false,
+                form: {
+                    ID: 0,
+                    SeoKeyword: '',
+                    SeoDescription: '',
                 }
             },
             table: {
@@ -85,15 +132,14 @@ export default {
             },
             tree: [
                 {
-                    label: '顶级类目',
-                    value: 0,
-                    id: 0
+                    Name: '顶级类目',
+                    ID: 0
                 }
             ],
             currentNodeKey: [0],
             defaultProps: {
-                children: 'children',
-                label: 'label'
+                children: 'Children',
+                label: 'Name'
             }
         }
     },
@@ -103,58 +149,108 @@ export default {
     methods: {
         /**
          * 点击配置 seo
+         * @param {*} row
          */
-        handleConfigSeo: function() {
-
+        handleConfigSeo: function(row) {
+            this.dialogSeo.show = true
+            this.dialogSeo.form = {
+                SeoKeyword: row.SeoKeyword,
+                SeoDescription: row.SeoDescription,
+                ID: row.ID
+            }
+        },
+        /**
+         * 编辑
+         * @param {*} row
+         */
+        handleEdit: function (row) {
+            this.dialog.show = true
+            this.dialog.form = {
+                Name: row.Name,
+                ParentID: row.ParentID,
+                ID: row.ID
+            }
+        },
+        /**
+         * 删除产品类目
+         * @param {*} row
+         */
+        handleDelete: function (row) {
+            this.$confirm('确定要删除此条类目吗？','提示', {
+                confirmButtonText: '确认删除',
+                type: 'error'
+            })
+            .then(() => {
+                deleteProductGroup(row.ID)
+                    .then(res => {
+                        if (res.data) {
+                            this.$message.success(res.data)
+                            this.getTableData()
+                        } else {
+                            this.$message.error(res.errMsg)
+                        }
+                    })
+            })
+            .catch(() => {})
         },
         /**
          * 取消创建
          */
         handleCancel: function () {
             this.dialog.show = false
+            this.dialogSeo.show = false
+        },
+        /**
+         * 发送 seo 配置请求
+         */
+        handleSendSeoRequest: function () {
+            changeProductGroupConfig(this.dialogSeo.form.ID, this.dialogSeo.form)
+                .then(res => {
+                    this.$message.success(res.data)
+                    this.dialogSeo.show = false
+                    this.dialogSeo.form = {
+                        Name: '',
+                        ParentID: 0,
+                        ID: 0
+                    }
+                    this.getTableData()
+                })
         },
         /**
          * 发送请求到服务器
          */
         handleSendRequest: function () {
             if (this.dialog.form.Name == '') return this.$message.error('请填写类目名称')
-            createProductGroup(this.dialog.form)
-                .then(res => {
-                    this.$message.success(res.data)
-                    this.dialog.show = false
-                    this.dialog.form = {
-                        Name: '',
-                        ParentID: 0
-                    }
-                    this.getTableData()
-                })
+            if (this.dialog.form.ID) {
+                updateProductGroup(this.dialog.form.ID, this.dialog.form)
+                    .then(res => {
+                        this.$message.success(res.data)
+                        this.dialog.show = false
+                        this.dialog.form = {
+                            Name: '',
+                            ParentID: 0,
+                            ID: 0
+                        }
+                        this.getTableData()
+                    })
+            } else {
+                createProductGroup(this.dialog.form)
+                    .then(res => {
+                        this.$message.success(res.data)
+                        this.dialog.show = false
+                        this.dialog.form = {
+                            Name: '',
+                            ParentID: 0
+                        }
+                        this.getTableData()
+                    })
+            }
         },
         /**
          * 选择树的结点
          */
         handleNodeClick: function (val) {
-            this.dialog.form.ParentID = val.value
-        },
-        /**
-         * 创建和更新产品类目
-         */
-        createProductGroup: function () {
-            
-        },
-        /**
-         * 删除类目
-         * @param {*} id 
-         */
-        deleteProductGroup: function (id) {
-            console.log(id)
-            this.$confirm('确定删除此条信息吗?', '提示', {
-                confirmButtonText: '确认删除',
-                type: 'error'
-            })
-            .then(() => {
-
-            })
-            .catch(() => {})
+            this.dialog.form.ParentID = val.ID
         },
         /**
          * 获取列表数据
@@ -162,7 +258,12 @@ export default {
         getTableData: function () {
             getProductGroup()
                 .then(res => {
+                    res.data.forEach(item => {
+                        item.show = false
+                        item.hasChildren = item.Children.length !== 0
+                    })
                     this.table.data = res.data
+                    this.tree[0].Children = res.data
                 })
         }
     }

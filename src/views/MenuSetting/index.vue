@@ -30,7 +30,7 @@
                     >
                     <template slot-scope="scope">
                         <div style="cursor: pointer;" v-if="!scope.row.show" @click="handleShowInput(scope.row)">{{ scope.row.Num }}</div>
-                        <el-input size="small"  @blur="handleChangeNum(scope.row)" v-model="scope.row.Num" v-else placeholder="请输入顺序编号" />
+                        <el-input size="small" :ref="`input-${ scope.row.ID }`" @blur="handleChangeNum(scope.row)" v-model="scope.row.Num" v-else placeholder="请输入顺序编号" />
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -147,6 +147,9 @@ export default {
          */
         handleShowInput: function(row) {
             row.show = !row.show
+            this.$nextTick(() => {
+                this.$refs[`input-${ row.ID }`].focus()
+            })
         },
         /**
          * 改变当前菜单的顺序

@@ -229,7 +229,17 @@ export function createProductGroup(param) {
  * @returns 
  */
 export function updateProductGroup(id, param) {
-    return axios.post(host + '/manage' + id, param)
+    return axios.post(host + '/manage/category/' + id, param)
+}
+
+/**
+ * 修改类目SEO配置
+ * @param {*} id 
+ * @param {*} param 
+ * @returns 
+ */
+export function changeProductGroupConfig(id, param) {
+    return axios.post(host + '/manage/category-seo/' + id, param)
 }
 
 /**
@@ -238,7 +248,7 @@ export function updateProductGroup(id, param) {
  * @returns 
  */
 export function deleteProductGroup(id) {
-    return axios.delete(host + '/manage' + id)
+    return axios.delete(host + '/manage/category/' + id)
 }
 
 // --------------------------------------     解决方案
@@ -249,7 +259,7 @@ export function deleteProductGroup(id) {
  * @returns 
  */
 export function getProgram(param) {
-    return axios.get('/manage/program', param)
+    return axios.get(host + '/manage/program', param)
 }
 
 /**
@@ -258,7 +268,7 @@ export function getProgram(param) {
  * @returns 
  */
 export function createProgram(param) {
-    return axios.post('/manage/program', param)
+    return axios.post(host + '/manage/program', param)
 }
 
 /**
@@ -268,7 +278,7 @@ export function createProgram(param) {
  * @returns 
  */
 export function updateProgram(id, param) {
-    return axios.post('/manage/program/' + id, param)
+    return axios.post(host + '/manage/program/' + id, param)
 }
 
 /**
@@ -278,7 +288,7 @@ export function updateProgram(id, param) {
  * @returns 
  */
 export function updateProgramIndex(id, param) {
-    return axios.post('/manage/program-num/' + id, param)
+    return axios.post(host + '/manage/program-num/' + id, param)
 }
 
 /**
@@ -288,7 +298,7 @@ export function updateProgramIndex(id, param) {
  * @returns 
  */
 export function updateProgramSeo(id, param) {
-    return axios.post('/manage/program-seo/' + id, param)
+    return axios.post(host + '/manage/program-seo/' + id, param)
 }
 
 /**
@@ -297,7 +307,7 @@ export function updateProgramSeo(id, param) {
  * @returns 
  */
 export function deleteProgram(id) {
-    return axios.delete('/manage/program/' + id)
+    return axios.delete(host + '/manage/program/' + id)
 }
 
 // --------------------------------------     自定义页面管理
@@ -307,8 +317,8 @@ export function deleteProgram(id) {
  * @param {*} param 
  * @returns 
  */
-export function getCases(param) {
-    return axios.get('/manage/cases', param)
+export function getCases(page, menuId) {
+    return axios.get(host + `/manage/cases?page=${ page }&menuID=${ menuId }`)
 }
 
 /**
@@ -316,8 +326,8 @@ export function getCases(param) {
  * @param {*} param 
  * @returns 
  */
-export function createCases(param) {
-    return axios.post('/manage/cases', param)
+export function createCases(menuId, param) {
+    return axios.post(host + '/manage/case-add/' + menuId, param)
 }
 
 /**
@@ -327,17 +337,17 @@ export function createCases(param) {
  * @returns 
  */
 export function updateCases(id, param) {
-    return axios.post('/manage/cases/' + id, param)
+    return axios.post(host + '/manage/case-save/' + id, param)
 }
 
 /**
  * 更新自定义页面的位置顺序
- * @param {*} id 
+ * @param {*} id  
  * @param {*} param 
  * @returns 
  */
 export function updateCasesIndex(id, param) {
-    return axios.post('/manage/cases-num/' + id, param)
+    return axios.post(host + '/manage/cases-num/' + id, param)
 }
 
 /**
@@ -347,7 +357,7 @@ export function updateCasesIndex(id, param) {
  * @returns 
  */
 export function updateCasesSeo(id, param) {
-    return axios.post('/manage/cases-seo/' + id, param)
+    return axios.post(host + '/manage/cases-seo/' + id, param)
 }
 
 /**
@@ -356,7 +366,7 @@ export function updateCasesSeo(id, param) {
  * @returns 
  */
 export function deleteCases(id) {
-    return axios.delete('/manage/cases/' + id)
+    return axios.delete(host + '/manage/case/' + id)
 }
 
 // --------------------------------------     产品管理
@@ -425,8 +435,8 @@ export function deleteProducts(id) {
  * @param {*} param 
  * @returns 
  */
-export function getModels(param) {
-    return axios.get('/manage/models', param)
+export function getModels(category_id, page) {
+    return axios.get(host + `/manage/models?category_id=${ category_id }&page=${ page }`)
 }
 
 /**
@@ -435,7 +445,7 @@ export function getModels(param) {
  * @returns 
  */
 export function createModels(param) {
-    return axios.post('/manage/model', param)
+    return axios.post(host + '/manage/model', param)
 }
 
 /**
@@ -445,7 +455,7 @@ export function createModels(param) {
  * @returns 
  */
 export function updateModels(id, param) {
-    return axios.post('/manage/model/' + id, param)
+    return axios.post(host + '/manage/model/' + id, param)
 }
 
 /**
@@ -454,5 +464,5 @@ export function updateModels(id, param) {
  * @returns 
  */
 export function deleteModels(id) {
-    return axios.delete('/manage/model/' + id)
+    return axios.delete(host + '/manage/model/' + id)
 }
