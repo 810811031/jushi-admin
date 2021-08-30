@@ -57,7 +57,7 @@
             </div>
             <div class="cover1" v-else>
                 <el-button class="delete" @click="handleDeleteFormSrc" type="danger" size="small" icon="el-icon-delete" circle></el-button>
-                <img style="width: 100%; height: 100%" :src="form.Src" />
+                <img :src="host + form.Src" style="width: 100%; max-width: auto; max-height: auto;" />
             </div>
             <div class="row">
                 <span class="label">图片Alt</span>
@@ -73,12 +73,13 @@
 </template>
 
 <script>
-import { getBannerList, createBanner, updateBanner, deleteBanner } from '@/api'
+import { host, getImageBase64, getBannerList, createBanner, updateBanner, deleteBanner } from '@/api'
 
 export default {
     name: 'PAGE_BannerSetting',
     data: function () {
         return {
+            host,
             table: {
                 data: []
             },
@@ -90,7 +91,6 @@ export default {
             dialog: {
                 show: false
             },
-            host: ''
         }
     },
     created: function () {
@@ -130,8 +130,9 @@ export default {
         /**
          * 发送请求
          */
-        handleSendRequest: function () {
+        handleSendRequest: async function () {
             if (this.form.id) {
+                this.form.Src = await getImageBase64(this.form.Src)
                 updateBanner(this.form.id, this.form)
                     .then(() => {
                         this.$message.success('更新 banner 成功')
@@ -273,6 +274,12 @@ export default {
             position: absolute;
             right: -10px;
             top: -10px;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            // max-width: 130px;
+            // max-height: 130px;
         }
     }
 }

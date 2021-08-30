@@ -52,31 +52,6 @@
                     </template>
                 </el-table-column>
             </el-table>
-            <!-- <div class="line"></div> -->
-            <!-- <el-form :model="form" label-width="150px">
-                <el-form-item label="关于我们：">
-                    <el-input type="textarea" :rows="7" 
-                        v-model="form.aboutUs" size="small"
-                        maxlength="500" show-word-limit 
-                        placeholder="请输入介绍"
-                        style="width: 500px"></el-input>
-                </el-form-item>
-                <el-form-item label="联系电话：">
-                    <el-input size="small" v-model="form.phone" style="width: 300px" placeholder="请输入联系电话" />
-                </el-form-item>
-                <el-form-item label="天猫商城地址：">
-                    <el-input size="small" v-model="form.tianmao" style="width: 300px" placeholder="请输入URL地址" />
-                </el-form-item>
-                <el-form-item label="举视商城地址：">
-                    <el-input size="small" v-model="form.jushi" style="width: 300px" placeholder="请输入URL地址" />
-                </el-form-item>
-                <el-form-item label="合作伙伴logo：">
-
-                </el-form-item>
-            </el-form> -->
-            <!-- <div class="footer">
-                <el-button type="primary" size="small">保存</el-button>
-            </div> -->
         </div>
 
         <el-dialog

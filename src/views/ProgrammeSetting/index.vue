@@ -1,7 +1,7 @@
 <template>
     <div class="programmeSetting">
         <div class="btns">
-            <el-button @click="dialog.show = true" type="primary" size="small">添加解决方案</el-button>
+            <el-button @click="handleClick" type="primary" size="small">添加解决方案</el-button>
         </div>
         <div class="content">
             <el-table :data="table.data" border>
@@ -24,7 +24,7 @@
                     align="center"
                     >
                     <template slot-scope="scope">
-                        <img :src="scope.row.Cover" style="width: 300px" />
+                        <img :src="host + scope.row.Cover" style="width: 300px" />
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -35,7 +35,7 @@
                 </el-table-column>
                 <el-table-column
                     prop="Num"
-                    label="排序"
+                    label="排序(点击修改)"
                     align="center"
                     >
                     <template slot-scope="scope">
@@ -77,8 +77,8 @@
                             <i class="el-icon-plus"></i>
                         </div>
                         <div class="cover1"  v-else>
-                            <el-button class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
-                            <img style="width: 100%; height: 100%" :src="dialog.form.Cover" />
+                            <el-button @click="handleRemoveImage" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
+                            <img :src="dialog.form.Cover.indexOf('base64') > -1 ? dialog.form.Cover : host + dialog.form.Cover" />
                         </div>
                         <input type="file" ref="file" accept="image/*" @change="handleInputChange" style="display: none;" />
                     </el-form-item>
@@ -122,12 +122,22 @@
 
 <script>
 import Editor from 'wangeditor'
-import { getProgram, createProgram, deleteProgram, updateProgramSeo, updateProgram, updateProgramIndex } from '@/api'
+import { 
+    host, 
+    getProgram, 
+    createProgram, 
+    deleteProgram, 
+    updateProgramSeo, 
+    updateProgram, 
+    updateProgramIndex,
+    getImageBase64 
+} from '@/api'
 
 export default {
     name: 'PAGE_ProgrammeSetting',
     data: function () {
         return {
+            host,
             table: {
                 data: [],
                 current: 1,
@@ -175,6 +185,26 @@ export default {
         }
     },
     methods: {
+        handleClick: function() {
+            this.dialog.show = true
+            this.dialog.form = {
+                ...this.dialog,
+                Title: '',
+                SubTitle: '',
+                Cover: '',
+                SeoKeyword: '',
+                SeoDescription: '',
+                Txt: '',
+                Num: '',
+                ID: ''
+            }
+        },
+        /**
+         * 删除图片
+         */
+        handleRemoveImage: function() {
+            this.dialog.form.Cover = ''
+        },
         /**
          * 修改单条记录
          * @param { Object } row 
@@ -223,7 +253,6 @@ export default {
          * @param { Object } row 
          */
         handleDelete: function (row) {
-            console.log(row)
             this.$confirm('确定要删除此条目吗?', '提示', {
                 confirmButtonText: '确认删除',
                 type: 'danger'
@@ -284,8 +313,9 @@ export default {
         /**
          * 创建解决方案
          */
-        handleCreate: function () {
+        handleCreate: async function () {
             if (this.dialog.form.ID) {
+                this.dialog.form.Cover = await getImageBase64(this.dialog.form.Cover)
                 updateProgram(this.dialog.form.ID, this.dialog.form)
                     .then(res => {
                         this.$message.success(res.data)
@@ -345,8 +375,8 @@ export default {
         box-sizing: border-box;
         padding: 20px;
         .cover {
-            width: 170px;
-            height: 170px;
+            width: 130px;
+            height: 130px;
             border-radius: 4px;
             box-sizing: border-box;
             border: 1px dashed #ccc;
@@ -364,11 +394,16 @@ export default {
             }
         }
         .cover1 {
-            width: 170px;
-            height: 170px;
+            width: 130px;
+            height: 130px;
             border-radius: 4px;
             vertical-align: top;
             position: relative;
+            background-color: #e8e8e8;
+            vertical-align: top;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
             &:hover .delete{
                 display: block;
             }
@@ -378,6 +413,12 @@ export default {
                 top: -10px;
                 z-index: 2;
                 display: none;
+            }
+            img {
+                width: auto;
+                height: auto;
+                max-width: 130px;
+                max-height: 130px;
             }
         }
     }

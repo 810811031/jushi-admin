@@ -5,7 +5,47 @@ import { Message } from 'element-ui'
 /**
  * 判断当前环境 是否添加代理前缀
  */
-const host = process.env.NODE_ENV === 'development' ? '/api' : ''
+export const host = process.env.NODE_ENV === 'development' ? '/api' : ''
+
+/**
+ * 将图片装换为 base64 码
+ * @param { string } Src
+ */
+export function getImageBase64(path) {
+    if (path == '') return ''
+    if (path.indexOf('base64') > -1) {
+        return path
+    }
+    path = host + path
+    return new Promise(resolve => {
+        var img = new Image();  
+        img.src = path;  
+        img.onload = function(){  
+            //默认按比例压缩  
+            var w = this.width,  
+                h = this.height; 
+            var quality = 1; // 默认图片质量为0.7  
+            
+            //生成canvas  
+            var canvas = document.createElement('canvas');  
+            var ctx = canvas.getContext('2d');  
+            
+            // 创建属性节点  
+            canvas.setAttribute("width", w);  
+            canvas.setAttribute("height", h);
+                    
+            ctx.drawImage(this, 0, 0, w, h);  
+            // quality值越小，所绘制出的图像越模糊  
+            var base64 = canvas.toDataURL('image/jpeg', quality);  
+            // 回调函数返回base64的值  
+            resolve(base64)
+        }
+    })
+}
+
+export function clone(obj) {
+    return JSON.parse(JSON.stringify(obj))
+}
 
 /**
  * 如果当前为刷新则从本地获取 token
@@ -115,7 +155,7 @@ export function updateBanner(id, param) {
  * @param {*} id 
  */
 export function deleteBanner(id) {
-    return axios.post(host + '/manage/banner/' + id)
+    return axios.delete(host + '/manage/banner/' + id)
 }
 
 // --------------------------------------    菜单管理
@@ -386,7 +426,7 @@ export function getProducts(page) {
  * @returns 
  */
 export function createProducts(param) {
-    return axios.post('/manage/product', param)
+    return axios.post(host + '/manage/product', param)
 }
 
 /**
@@ -396,7 +436,7 @@ export function createProducts(param) {
  * @returns 
  */
 export function updateProducts(id, param) {
-    return axios.post('/manage/product/' + id, param)
+    return axios.post(host + '/manage/product/' + id, param)
 }
 
 /**
@@ -406,7 +446,7 @@ export function updateProducts(id, param) {
  * @returns 
  */
 export function updateProductsIndex(id, param) {
-    return axios.post('/manage/product-num/' + id, param)
+    return axios.post(host + '/manage/product-num/' + id, param)
 }
 
 /**
@@ -416,7 +456,7 @@ export function updateProductsIndex(id, param) {
  * @returns 
  */
 export function updateProductsSeo(id, param) {
-    return axios.post('/manage/product-seo/' + id, param)
+    return axios.post(host + '/manage/product-seo/' + id, param)
 }
 
 /**
@@ -425,7 +465,7 @@ export function updateProductsSeo(id, param) {
  * @returns 
  */
 export function deleteProducts(id) {
-    return axios.delete('/manage/product/' + id)
+    return axios.delete(host + '/manage/product/' + id)
 }
 
 // --------------------------------------     产品型号管理
@@ -436,7 +476,7 @@ export function deleteProducts(id) {
  * @returns 
  */
 export function getModels(category_id, page) {
-    return axios.get(host + `/manage/models?category_id=${ category_id }&page=${ page }`)
+    return axios.get(host + `/manage/models?categoryID=${ category_id }&page=${ page }`)
 }
 
 /**

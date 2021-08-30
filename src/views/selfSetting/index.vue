@@ -18,7 +18,7 @@
                                 align="center"
                                 >
                                 <template slot-scope="scope">
-                                    <img class="Cover" style="width: 300px" :src="scope.row.Cover" />
+                                    <img class="Cover" style="width: 300px" :src="host + scope.row.Cover" />
                                 </template>    
                             </el-table-column>
                             <el-table-column
@@ -68,7 +68,7 @@
                                 align="center"
                                 >
                                 <template slot-scope="scope">
-                                    <img class="Cover" style="width: 300px" :src="scope.row.Cover" />
+                                    <img class="Cover" style="width: 300px" :src="host + scope.row.Cover" />
                                 </template>    
                             </el-table-column>
                             <el-table-column
@@ -114,8 +114,8 @@
                             <i class="el-icon-plus"></i>
                         </div>
                         <div class="cover1"  v-else>
-                            <el-button class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
-                            <img style="width: 100%; height: 100%" :src="formProf.Cover" />
+                            <el-button @click="handleRemoveImage('formProf')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
+                            <img :src="formProf.Cover.indexOf('base64') > -1 ? formProf.Cover : host + formProf.Cover" />
                         </div>
                         <input type="file" ref="prod" accept="image/*" @change="handleProdInputChange" style="display: none;" />
                     </el-form-item>
@@ -147,8 +147,8 @@
                             <i class="el-icon-plus"></i>
                         </div>
                         <div class="cover1"  v-else>
-                            <el-button class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
-                            <img style="width: 100%; height: 100%" :src="formNews.Cover" />
+                            <el-button @click="handleRemoveImage('formNews')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
+                            <img :src="formNews.Cover.indexOf('base64') > -1 ? formNews.Cover : host + formNews.Cover" />
                         </div>
                         <input type="file" ref="news" accept="image/*" @change="handleNewsInputChange" style="display: none;" />
                     </el-form-item>
@@ -193,12 +193,22 @@
 
 <script>
 import Editor from 'wangeditor'
-import { getMenuList, getCases, createCases, updateCases, deleteCases, updateCasesSeo } from '@/api'
+import { 
+    host, 
+    clone,
+    getCases, 
+    createCases, 
+    updateCases, 
+    deleteCases, 
+    updateCasesSeo,
+    getImageBase64 
+} from '@/api'
 
 export default {
     name: 'PAGE_SelfSetting',
     data: function () {
         return {
+            host,
             activeName: 'prof',
             dialog1: {
                 show: false
@@ -232,7 +242,7 @@ export default {
                 Cover: '',
                 SeoKeyword: '',
                 SeoDescription: '',
-                MenuId: '',
+                MenuId: '8',
                 ID: null
             },
             formNews: {
@@ -241,7 +251,7 @@ export default {
                 Cover: '',
                 SeoKeyword: '',
                 SeoDescription: '',
-                MenuId: '',
+                MenuId: '7',
                 ID: null
             },
             editor1: '',
@@ -255,6 +265,7 @@ export default {
         'dialog1.show' (val) {
             if (!val) {
                 this.formProf = {
+                    ...this.formProf,
                     Title: '',
                     Txt: '',
                     Cover: '',
@@ -275,6 +286,7 @@ export default {
         'dialog2.show' (val) {
             if (!val) {
                 this.formNews = {
+                    ...this.formNews,
                     Title: '',
                     Txt: '',
                     Cover: '',
@@ -297,6 +309,12 @@ export default {
         }
     },
     methods: {
+        /**
+         * 删除图片
+         */
+        handleRemoveImage: function(name) {
+            this[name].Cover = ''
+        },
         /**
          * 点击展示工程案例
          */
@@ -368,7 +386,7 @@ export default {
             }
             this.dialog2.show = true
             setTimeout(() => {
-                this.editor1.txt.html(this.formNews.Txt)
+                this.editor2.txt.html(this.formNews.Txt)
             }, 200)
         },
         /**
@@ -395,44 +413,48 @@ export default {
         handleCancelProf: function () {
             this.dialog1.show = false
             this.formProf = {
+                ...this.formProf,
                 Title: '',
                 Txt: '',
                 Cover: '',
                 SeoKeyword: '',
                 SeoDescription: '',
-                ...this.formProf
             }
         },
         /**
          * 创建工程案例
          */
-        handleCreateProf: function () {
+        handleCreateProf: async function () {
+            this.formProf.Cover = await getImageBase64(this.formProf.Cover)
+            const param = clone(this.formProf)
+            delete param.MenuId
             if (this.formProf.ID) {
-                updateCases(this.formProf.ID, this.formProf)
+                updateCases(this.formProf.ID, param)
                     .then(res => {
                         this.$message.success(res.data)
                         this.dialog1.show = false
                         this.formProf = {
+                            ...this.formProf,
                             Title: '',
                             Txt: '',
                             Cover: '',
                             SeoKeyword: '',
                             SeoDescription: '',
-                            ...this.formProf
                         }
+                        this.getTableList()
                     })
             } else {
-                createCases(this.formProf.MenuId, this.formProf)
+                createCases(this.formProf.MenuId, param)
                     .then(res => {
                         this.$message.success(res.data)
                         this.dialog1.show = false
                         this.formProf = {
+                            ...this.formProf,
                             Title: '',
                             Txt: '',
                             Cover: '',
                             SeoKeyword: '',
                             SeoDescription: '',
-                            ...this.formProf
                         }
                         this.getTableList()
                     })
@@ -444,44 +466,48 @@ export default {
         handleCancelNews: function () {
             this.dialog2.show = false
             this.formNews = {
+                ...this.formNews,
                 Title: '',
                 Txt: '',
                 Cover: '',
                 SeoKeyword: '',
                 SeoDescription: '',
-                ...this.formNews
             }
         },
         /**
          * 创建新闻
          */
-        handleCreateNews: function () {
+        handleCreateNews: async function () {
+            this.formNews.Cover = await getImageBase64(this.formNews.Cover)
+            const param = clone(this.formNews)
+            delete param.MenuId
             if (this.formNews.ID) {
-                updateCases(this.formNews.ID, this.formNews)
+                updateCases(this.formNews.ID, param)
                     .then(res => {
                         this.$message.success(res.data)
                         this.dialog2.show = false
                         this.formNews = {
+                            ...this.formProf,
                             Title: '',
                             Txt: '',
                             Cover: '',
                             SeoKeyword: '',
                             SeoDescription: '',
-                            ...this.formNews
                         }
+                        this.getTableList()
                     })
             } else {
-                createCases(this.formNews.MenuId, this.formNews)
+                createCases(this.formNews.MenuId, param)
                     .then(res => {
                         this.$message.success(res.data)
                         this.dialog2.show = false
                         this.formNews = {
+                            ...this.formProf,
                             Title: '',
                             Txt: '',
                             Cover: '',
                             SeoKeyword: '',
                             SeoDescription: '',
-                            ...this.formNews
                         }
                         this.getTableList()
                     })
@@ -497,7 +523,7 @@ export default {
          * 选择新闻图片
          */
         handleSelectCoverNews: function () {
-            this.$refs.prod.click()
+            this.$refs.news.click()
         },
         /**
          * 准备上传图片工程案例
@@ -525,17 +551,18 @@ export default {
          * 获取菜单列表
          */
         getMenuList: function () {
-            getMenuList()
-                .then(res => {
-                    res.data.forEach(item => {
-                        if (item.Title == '工程案例') {
-                            this.formProf.MenuId = item.ID
-                        } else if (item.Title == '新闻中心') {
-                            this.formNews.MenuId = item.ID
-                        }
-                    })
-                    this.getTableList()
-                })
+            // getMenuList()
+            //     .then(res => {
+            //         res.data.forEach(item => {
+            //             if (item.Title == '工程案例') {
+            //                 this.formProf.MenuId = item.ID
+            //             } else if (item.Title == '新闻中心') {
+            //                 this.formNews.MenuId = item.ID
+            //             }
+            //         })
+                    
+            //     })
+            this.getTableList()
         },
         /**
          * 获取列表数据
@@ -578,8 +605,8 @@ export default {
         box-sizing: border-box;
         padding: 20px;
         .cover {
-            width: 170px;
-            height: 170px;
+            width: 130px;
+            height: 130px;
             border-radius: 4px;
             box-sizing: border-box;
             border: 1px dashed #ccc;
@@ -597,11 +624,16 @@ export default {
             }
         }
         .cover1 {
-            width: 170px;
-            height: 170px;
+            width: 130px;
+            height: 130px;
             border-radius: 4px;
             vertical-align: top;
             position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            vertical-align: top;
+            background-color: #e8e8e8;
             &:hover .delete{
                 display: block;
             }
@@ -611,6 +643,12 @@ export default {
                 top: -10px;
                 z-index: 2;
                 display: none;
+            }
+            img {
+                width: auto;
+                height: auto;
+                max-width: 130px;
+                max-height: 130px;
             }
         }
     }
@@ -624,8 +662,8 @@ export default {
         box-sizing: border-box;
         padding: 20px;
         .cover {
-            width: 170px;
-            height: 170px;
+            width: 130px;
+            height: 130px;
             border-radius: 4px;
             box-sizing: border-box;
             border: 1px dashed #ccc;
@@ -643,11 +681,16 @@ export default {
             }
         }
         .cover1 {
-            width: 170px;
-            height: 170px;
+            width: 130px;
+            height: 130px;
             border-radius: 4px;
             vertical-align: top;
             position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            vertical-align: top;
+            background-color: #e8e8e8;
             &:hover .delete{
                 display: block;
             }
@@ -657,6 +700,12 @@ export default {
                 top: -10px;
                 z-index: 2;
                 display: none;
+            }
+            img {
+                width: auto;
+                height: auto;
+                max-width: 130px;
+                max-height: 130px;
             }
         }
     }

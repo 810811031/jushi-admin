@@ -18,7 +18,7 @@
                                 <i class="el-icon-plus"></i>
                             </div>
                             <div class="cover1" v-else style="background: #e8e8e8;">
-                                <img style="width: 100%;" :src="form.Icon" />
+                                <img :src="form.Icon.indexOf('base64') > -1 ? form.Icon : host + form.Icon" />
                                 <el-button @click="handleDeleteImage('Icon')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
                             </div>
                             <input @change="handleChangeFile('Icon')" type="file" accept="image/*" ref="Icon" style="display: none;" />
@@ -28,7 +28,7 @@
                                 <i class="el-icon-plus"></i>
                             </div>
                             <div class="cover1" v-else style="background: #e8e8e8;">
-                                <img style="width: 100%;" :src="form.LogoLight" />
+                                <img :src="form.LogoLight.indexOf('base64') > -1 ? form.LogoLight : host + form.LogoLight" />
                                 <el-button @click="handleDeleteImage('LogoLight')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
                             </div>
                             <input @change="handleChangeFile('LogoLight')" type="file" accept="image/*" ref="LogoLight" style="display: none;" />
@@ -38,7 +38,7 @@
                                 <i class="el-icon-plus"></i>
                             </div>
                             <div class="cover1" v-else style="background: #e8e8e8;">
-                                <img style="width: 100%;" :src="form.LogoDark" />
+                                <img :src="form.LogoDark.indexOf('base64') > -1 ? form.LogoDark : host + form.LogoDark" />
                                 <el-button @click="handleDeleteImage('LogoDark')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
                             </div>
                             <input @change="handleChangeFile('LogoDark')" type="file" accept="image/*" ref="LogoDark" style="display: none;" />
@@ -70,12 +70,13 @@
 
 <script>
 // saveBaseInfo
-import { getBaseInfo, saveBaseInfo } from '@/api'
+import { host, getBaseInfo, saveBaseInfo, getImageBase64 } from '@/api'
 
 export default {
     name: 'PAGE_GlobalSetting',
     data: function () {
         return {
+            host,
             activeName: 'base',
             form: {
                 Footer: '',
@@ -123,11 +124,12 @@ export default {
         /**
          * 保存基本信息
          */
-        handleSaveBase: function() {
-            console.log(this.form)
+        handleSaveBase: async function() {
+            this.form.Icon = await getImageBase64(this.form.Icon)
+            this.form.LogoDark = await getImageBase64(this.form.LogoDark)
+            this.form.LogoLight = await getImageBase64(this.form.LogoLight)
             saveBaseInfo(this.form)
                 .then(res => {
-                    console.log(res)
                     this.$message.success(res.data)
                 })
         },
@@ -186,6 +188,12 @@ export default {
                 position: absolute;
                 right: -10px;
                 top: -10px;
+            }
+            img {
+                width: auto;
+                height: auto;
+                max-width: 130px;
+                max-height: 130px;
             }
         }
     }
