@@ -144,13 +144,13 @@
                         <el-input placeholder="请输入安装方式" v-model="dialog.form.InstallMethod" size="small" style="width: 300px" />
                     </el-form-item>
                     <el-form-item label="技术指标">
-                        <el-input placeholder="请输入技术指标" v-model="dialog.form.TechnicalIndex" size="small" style="width: 300px" />
+                        <el-input type="textarea" :rows="5" placeholder="请输入技术指标" v-model="dialog.form.TechnicalIndex" size="small" style="width: 300px" />
                     </el-form-item>
                     <el-form-item label="应用场景">
-                        <el-input placeholder="请输入应用场景" v-model="dialog.form.ApplicationScene" size="small" style="width: 300px" />
+                        <el-input type="textarea" :rows="5" placeholder="请输入应用场景" v-model="dialog.form.ApplicationScene" size="small" style="width: 300px" />
                     </el-form-item>
                     <el-form-item label="充电场景">
-                        <el-input placeholder="请输入充电场景" v-model="dialog.form.ChargingScene" size="small" style="width: 300px" />
+                        <el-input type="textarea" :rows="5" placeholder="请输入充电场景" v-model="dialog.form.ChargingScene" size="small" style="width: 300px" />
                     </el-form-item>
                     <el-form-item label="产品SEO">
                         <el-input placeholder="请输入产品SEO" v-model="dialog.form.SeoKeyword" size="small" style="width: 300px" />
