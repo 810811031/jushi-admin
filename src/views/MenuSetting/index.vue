@@ -164,7 +164,8 @@ export default {
             })
             .then(() => {
                 deleteMenu(row.ID)
-                    .then(() => {
+                    .then(res => {
+                        if (res.errMsg) return this.$message.error(res.errMsg)
                         this.$message.success('删除成功')
                         this.getTableData()
                     })
