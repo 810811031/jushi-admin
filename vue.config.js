@@ -5,7 +5,7 @@ module.exports = {
         port: 8090,
         proxy: {
             '/api': {
-                target: 'http://www.sowellchina.com/website-api',
+                target: 'http://test-web.sowellchina.com/api',
                 changeOrigin: true,
                 pathRewrite: {
                     '/api': ''
