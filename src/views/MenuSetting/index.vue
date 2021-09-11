@@ -66,10 +66,10 @@
                 <el-form-item label="菜单名称（英文）：">
                     <el-input v-model="dialog.form.TitleEn" size="small" placeholder="请填写英文名称"></el-input>
                 </el-form-item>
-                <el-form-item label="辅助说明文字：">
+                <!-- <el-form-item label="辅助说明文字：" v-if="dialog.form.Status == 1">
                     <el-input v-model="dialog.form.Desc" size="small" placeholder="请填写辅助说明文字"></el-input>
-                </el-form-item>
-                <el-form-item label="页面描述文字：">
+                </el-form-item> -->
+                <el-form-item label="页面描述文字：" v-if="dialog.form.Status == 1">
                     <el-input v-model="dialog.form.Txt" size="small" placeholder="请填写页面描述文字"></el-input>
                 </el-form-item>
             </el-form>
@@ -148,7 +148,9 @@ export default {
                 TitleEn: row.TitleEn,
                 Desc: row.Desc,
                 Txt: row.Txt,
-                ID: row.ID
+                ID: row.ID,
+                Num: row.Num,
+                Status: row.Status
             }
             this.dialog.show = true
         },
@@ -182,20 +184,14 @@ export default {
                 TitleEn: '',
                 Desc: '',
                 Txt: '',
-                ID: 0
+                ID: 0,
+                Num: 0,
             }
         },
         /**
          * 点击新建菜单
          */
         handleSubmit: function () {
-            let result = false
-            Object.keys(this.dialog.form).forEach(key => {
-                if (typeof this.dialog.form[key] == 'string' && this.dialog.form[key] == '') {
-                    result = true
-                }
-            })
-            if (result) return this.$message.error('请填写完整后提交')
             if (this.dialog.form.ID) {
                 updateMenu(this.dialog.form.ID, this.dialog.form)
                     .then(() => {

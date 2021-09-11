@@ -21,12 +21,15 @@
                         <img class="preview" :src="host + scope.row.Src" :alt="scope.row.Alt" />
                     </template>
                 </el-table-column>
-                <el-table-column
-                    prop="Num"
-                    label="排序"
+                <!-- <el-table-column
+                    label="排序(点击修改)"
                     align="center"
                     >
-                </el-table-column>
+                    <template slot-scope="scope">
+                        <div style="cursor: pointer;" v-if="!scope.row.show" @click="handleShowInput(scope.row)">{{ scope.row.Num }}</div>
+                        <el-input size="small" :ref="`input-${ scope.row.ID }`" @blur="handleChangeNum(scope.row)" v-model="scope.row.Num" v-else placeholder="请输入顺序编号" />
+                    </template>
+                </el-table-column> -->
                 <el-table-column
                     prop="Src"
                     label="URL"
@@ -40,8 +43,6 @@
                     <template slot-scope="scope">
                         <el-button size="mini" type="primary" @click="handleUpdate(scope.row)">更新</el-button>
                         <el-button size="mini" type="danger" @click="handleDelete(scope.row)">删除</el-button>
-                        <el-button size="mini" type="info" circle icon="el-icon-top"></el-button>
-                        <el-button size="mini" type="info" circle icon="el-icon-bottom"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -97,6 +98,28 @@ export default {
         this.getTableList()
     },
     methods: {
+        /**
+         * 改变当前菜单的顺序
+         * @param {*} row
+         */
+        handleShowInput: function(row) {
+            row.show = !row.show
+            this.$nextTick(() => {
+                this.$refs[`input-${ row.ID }`].focus()
+            })
+        },
+        /**
+         * 改变当前菜单的顺序
+         * @param {*} row
+         */
+        handleChangeNum: function (row) {
+            row.show = !row.show
+            // updateProductsIndex(row.ID, { Num: Number(row.Num) })
+            //     .then(res => {
+            //         this.$message.success(res.data)
+            //         this.getTableData()
+            //     })
+        },
         /**
          * 删除 banner
          * @param { Object } row 单条数据
@@ -199,6 +222,7 @@ export default {
                 .then(res => {
                     res.data.list.forEach((item, index) => {
                         item.No = index + 1
+                        item.show = false
                     })
                     this.table.data = res.data.list
                 })
@@ -225,6 +249,7 @@ export default {
         .preview {
             width: 300px !important;
             min-height: 150px;
+            max-height: 150px;
             background-color: #e8e8e8;
             display: inline-block;
         }

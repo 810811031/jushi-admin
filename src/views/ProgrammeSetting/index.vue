@@ -73,9 +73,13 @@
                         <el-input v-model="dialog.form.SubTitle" size="small" style="width: 400px" placeholder="请输入副标题" />
                     </el-form-item>
                     <el-form-item label="封面">
-                        <div class="cover" @click="handleSelectCover" v-if="!dialog.form.Cover">
-                            <i class="el-icon-plus"></i>
-                        </div>
+                        <template v-if="!dialog.form.Cover">
+                            <div class="cover" @click="handleSelectCover" >
+                                <i class="el-icon-plus"></i>
+                            </div>
+                            <div class="image-tip">尺寸：216 * 216 px; 格式：PNG、JPG</div>
+                        </template>
+                        
                         <div class="cover1"  v-else>
                             <el-button @click="handleRemoveImage" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
                             <img :src="dialog.form.Cover.indexOf('base64') > -1 ? dialog.form.Cover : host + dialog.form.Cover" />
@@ -374,6 +378,10 @@ export default {
         background-color: #fff;
         box-sizing: border-box;
         padding: 20px;
+        .image-tip {
+            color: #999;
+            line-height: 30px;
+        }
         .cover {
             width: 130px;
             height: 130px;

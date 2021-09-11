@@ -52,7 +52,10 @@
                         <el-input v-model="form.title" size="small" style="width: 300px" placeholder="请输入岗位名称" />
                     </el-form-item>
                     <el-form-item label="岗位内容">
-                        <div id="editor" style="width: calc(100% - 30px)" v-loading="form.loading"></div>
+                        <!-- <div id="editor" style="width: calc(100% - 30px)" v-loading="form.loading"></div> -->
+                        <quill-editor
+                                v-model="form.content"
+                                />
                     </el-form-item>
                 </el-form>
                 <div class="btns" style="text-align: center;padding-top: 20px">
