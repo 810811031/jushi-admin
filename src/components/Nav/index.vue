@@ -38,13 +38,8 @@ export default {
                 },
                 {
                     routeName: 'ProductGroupSetting',
-                    label: '产品类目管理',
+                    label: '产品分类管理',
                     icon: 'el-icon-collection'
-                },
-                {
-                    routeName: 'ProductTypeSetting',
-                    label: '产品型号管理',
-                    icon: 'el-icon-notebook-2'
                 },
                 {
                     routeName: 'ProductSetting',

@@ -1,7 +1,7 @@
 <template>
     <div class="ProductGroupSetting">
         <div class="btns normal">
-            <el-button type="primary" size="small" @click="dialog.show = true">添加产品类目</el-button>
+            <el-button type="primary" size="small" @click="dialog.show = true">添加产品分类</el-button>
         </div>
 
         <div class="content">
@@ -10,7 +10,7 @@
                 >
                 <el-table-column
                     prop="ID"
-                    label="产品类目ID"
+                    label="产品分类ID"
                     align="center"
                     width="80"
                     ></el-table-column>
@@ -22,7 +22,7 @@
                     ></el-table-column>
                 <el-table-column
                     prop="Name"
-                    label="产品类目名称"
+                    label="产品分类名称"
                     align="center"
                     ></el-table-column>
                 <el-table-column
@@ -68,7 +68,7 @@
                         :props="defaultProps" @node-click="handleNodeClick"></el-tree>
                 </el-form-item>
                 <el-form-item label="类目名称">
-                    <el-input size="small" placeholder="请填写产品类目名称" v-model="dialog.form.Name" />
+                    <el-input size="small" placeholder="请填写产品分类名称" v-model="dialog.form.Name" />
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -172,7 +172,7 @@ export default {
             }
         },
         /**
-         * 删除产品类目
+         * 删除产品分类
          * @param {*} row
          */
         handleDelete: function (row) {

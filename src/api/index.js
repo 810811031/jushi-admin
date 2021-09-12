@@ -243,10 +243,10 @@ export function deleteOffers(id) {
     return axios.delete(host + '/manage/offer/' + id)
 }
 
-// --------------------------------------    产品类目管理 
+// --------------------------------------    产品分类管理 
 
 /**
- * 获取产品类目信息
+ * 获取产品分类信息
  * @returns 
  */
 export function getProductGroup() {
@@ -254,7 +254,7 @@ export function getProductGroup() {
 }
 
 /**
- * 创建产品类目管理
+ * 创建产品分类管理
  * @param {*} param 
  * @returns 
  */
@@ -263,7 +263,7 @@ export function createProductGroup(param) {
 }
 
 /**
- * 更新产品类目管理
+ * 更新产品分类管理
  * @param {*} id 
  * @param {*} param 
  * @returns 
@@ -283,7 +283,7 @@ export function changeProductGroupConfig(id, param) {
 }
 
 /**
- * 删除产品类目
+ * 删除产品分类
  * @param {*} id 
  * @returns 
  */

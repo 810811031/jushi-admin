@@ -44,16 +44,16 @@ const routes = [
 				meta: { title: '产品设置', icon: 'el-icon-s-order' }
 			},
 			{
+				path: 'product-setting-detail',
+				name: 'ProductSettingDetail',
+				component: () => import(/* webpackChunkName: "ProductSettingDetail" */ '@/views/ProductSetting/create'),
+				meta: { title: '新增产品', icon: 'el-icon-s-order' }
+			},
+			{
 				path: 'product-group-setting',
 				name: 'ProductGroupSetting',
 				component: () => import(/* webpackChunkName: "ProductGroupSetting" */ '@/views/ProductGroupSetting'),
-				meta: { title: '产品类目管理', icon: 'el-icon-collection' }
-			},
-			{
-				path: 'product-type-setting',
-				name: 'ProductTypeSetting',
-				component: () => import(/* webpackChunkName: "ProductTypeSetting" */ '@/views/ProductTypeSetting'),
-				meta: { title: '产品型号管理', icon: 'el-icon-notebook-2' }
+				meta: { title: '产品分类管理', icon: 'el-icon-collection' }
 			},
 			{
 				path: 'programme-setting',
