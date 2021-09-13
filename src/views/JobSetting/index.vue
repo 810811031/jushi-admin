@@ -70,7 +70,6 @@
 
 <script>
 import { getOffers, createOffers, updateOffers, deleteOffers } from '@/api'
-import Editor from 'wangeditor'
 
 export default {
     name: 'PAGE_JobSetting',
@@ -104,14 +103,6 @@ export default {
                 this.form.title = ''
                 return
             }
-            this.$nextTick(() => {
-                this.editor = new Editor('#editor')
-                const that = this
-                this.editor.create()
-                this.editor.config.onchange = function (newHtml) {
-                    that.form.content = newHtml            
-                }
-            })
         }
     },
     methods: {

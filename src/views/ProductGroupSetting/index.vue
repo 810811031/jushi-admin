@@ -224,7 +224,11 @@ export default {
             if (this.dialog.form.ID) {
                 updateProductGroup(this.dialog.form.ID, this.dialog.form)
                     .then(res => {
-                        this.$message.success(res.data)
+                        if (res.errMsg) {
+                            this.$message.error(res.errMsg)
+                        } else {
+                            this.$message.success(res.data)
+                        }
                         this.dialog.show = false
                         this.dialog.form = {
                             Name: '',

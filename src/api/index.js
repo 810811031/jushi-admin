@@ -506,3 +506,11 @@ export function updateModels(id, param) {
 export function deleteModels(id) {
     return axios.delete(host + '/manage/model/' + id)
 }
+
+/**
+ * 获取产品详情
+ * @param {*} id 
+ */
+export function getProductDetail(id) {
+    return axios.get(host + '/manage/product/' + id)
+}

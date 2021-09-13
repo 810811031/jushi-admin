@@ -334,7 +334,7 @@ export default {
                     console.log(res)
                     this.table.loading = false
                     this.table.data = res.data.list
-                    this.table.total = res.data.pageTotal
+                    this.table.total = res.data.pageTotal * 10
                 })
         }
     }
