@@ -410,13 +410,16 @@ export default {
                         Series: res.data.Series,
                         Imgs: res.data.Imgs
                     }
+
+                    if (this.form.Series.length == 0) {
+                        this.form.Series.push(this.serie)
+                    }
                     this.form.Series[0].Type = 'success'
                     this.form.Series.forEach(serie => {
                         serie.Param.forEach((item, index) => {
                             item.ID = index
                         })
                     })
-                    console.log(this.form)
                 })
         }
     }

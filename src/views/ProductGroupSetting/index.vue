@@ -235,7 +235,9 @@ export default {
                             ParentID: 0,
                             ID: 0
                         }
-                        this.getTableData()
+                        this.getTableData(function () {
+                            window.location.reload()
+                        })
                     })
             } else {
                 createProductGroup(this.dialog.form)
@@ -246,7 +248,9 @@ export default {
                             Name: '',
                             ParentID: 0
                         }
-                        this.getTableData()
+                        this.getTableData(function () {
+                            window.location.reload()
+                        })
                     })
             }
         },
@@ -259,7 +263,7 @@ export default {
         /**
          * 获取列表数据
          */
-        getTableData: function () {
+        getTableData: function (fn) {
             getProductGroup()
                 .then(res => {
                     res.data.forEach(item => {
@@ -268,6 +272,7 @@ export default {
                     })
                     this.table.data = res.data
                     this.tree[0].Children = res.data
+                    fn && fn()
                 })
         }
     }

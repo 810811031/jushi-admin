@@ -109,6 +109,7 @@ export default {
          * 修改
          */
         handleEdit: function (row) {
+            console.log(row)
             this.$router.push({ name: 'ProductSettingDetail', query: { id: row.ProductID } })
         },
         /**

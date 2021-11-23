@@ -512,5 +512,5 @@ export function deleteModels(id) {
  * @param {*} id 
  */
 export function getProductDetail(id) {
-    return axios.get(host + '/manage/product/' + id)
+    return axios.get(host + '/manage/product-detail/' + id)
 }
