@@ -36,7 +36,7 @@ export function getImageBase64(path) {
                     
             ctx.drawImage(this, 0, 0, w, h);  
             // quality值越小，所绘制出的图像越模糊  
-            var base64 = canvas.toDataURL('image/jpeg', quality);  
+            var base64 = canvas.toDataURL('image/png', quality);  
             // 回调函数返回base64的值  
             resolve(base64)
         }

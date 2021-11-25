@@ -19,16 +19,16 @@
                     </div>
                 </transition>
             </el-form-item>
-            <el-form-item label="产品标题">
-                <el-input placeholder="请输入产品标题" size="small"
+            <el-form-item label="产品名称">
+                <el-input placeholder="请输入产品名称" size="small"
                     v-model="form.Title" style="margin-top: 4px; width: 300px" />
             </el-form-item>
-            <el-form-item label="产品副标题">
-                <el-input placeholder="请输入产品标题" size="small"
+            <el-form-item label="产品别名">
+                <el-input placeholder="请输入产品别名" size="small"
                     v-model="form.SubTitle" style="margin-top: 4px; width: 300px" />
             </el-form-item>
             <el-form-item label="产品型号">
-                 <el-input placeholder="请输入产品标题" size="small"
+                 <el-input placeholder="请输入产品型号" size="small"
                     v-model="form.Model" style="margin-top: 4px; width: 300px" />
             </el-form-item>
             <el-form-item label="产品封面">
@@ -100,28 +100,29 @@
                     <el-input placeholder="请输入天猫地址" size="small"
                         v-model="form.Series[currentTag].Tmall" style="margin-top: 4px; width: 300px" />
                 </el-form-item>
-                <el-form-item label="详细">
-                    <el-table :data="form.Series[currentTag].Param" border style="width: 600px" 
+                <el-form-item label="产品参数">
+                    <el-table :data="form.Series[currentTag].Param" border style="width: 800px" 
                         v-if="form.Series[currentTag].Param.length > 0" size="small">
                         <el-table-column
                             prop="Key"
-                            label="简介名"
+                            label="参数名称"
                             width="70">
                         </el-table-column>
                         <el-table-column
                             prop="Val"
-                            label="简介内容"
-                            width="450">
+                            label="参数内容"
+                            width="570">
                         </el-table-column>
                         <el-table-column
                             label="操作"
-                            width="80">
+                            width="160">
                             <template slot-scope="scope">
+                                <el-button type="primary" size="small" @click="handleUpdateParam(scope.row)">编辑</el-button>
                                 <el-button type="danger" size="small" @click="handleDeleteParam(scope.row)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
-                    <el-button @click="info.show = true" type="primary" size="mini" icon="el-icon-plus" style="margin-top: 5px">新建简介</el-button>
+                    <el-button @click="info.show = true" type="primary" size="mini" icon="el-icon-plus" style="margin-top: 5px">添加产品参数</el-button>
                 </el-form-item>
             </div>
         </el-form>
@@ -130,16 +131,16 @@
             <el-button size="small" @click="handleConfirmCreate" type="primary" :loading="loading">确认</el-button>
         </div>
         <el-dialog
-            title="添加简介"
+            title="添加产品参数"
             :visible.sync="info.show"
             :modal="false"
             width="30%">
             <el-form :model="info" label-width="80px">
-                <el-form-item label="简介名">
-                    <el-input v-model="info.key" style="width: 300px" placeholder="请输入简介名" size="small" />
+                <el-form-item label="参数名称">
+                    <el-input v-model="info.key" style="width: 300px" placeholder="请输入参数名" size="small" />
                 </el-form-item>
-                <el-form-item label="简介内容">
-                    <el-input v-model="info.val" style="width: 300px" placeholder="请输入简介内容" size="small" type="textarea" :rows="5" />
+                <el-form-item label="参数内容">
+                    <el-input v-model="info.val" style="width: 300px" placeholder="请输入参数内容" size="small" type="textarea" :rows="5" />
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -202,7 +203,8 @@ export default {
             info: {
                 show: false,
                 key: '',
-                val: ''
+                val: '',
+                ID: null
             },
             productList: [],
             defaultProps: {
@@ -221,6 +223,7 @@ export default {
             if (!val) {
                 this.info.key = ''
                 this.info.val = ''
+                this.info.ID = null
             }
         },
     },
@@ -290,12 +293,24 @@ export default {
          * @param {*} index
          */
         handleAddInfo: function () {
-            this.form.Series[this.currentTag].Param.push({
-                Key: this.info.key,
-                Val: this.info.val,
-                ID: this.form.Series[this.currentTag].Param.length
-            })
+            if (typeof this.info.ID == 'number') {
+                this.form.Series[this.currentTag].Param[this.info.ID].Key = this.info.key
+                this.form.Series[this.currentTag].Param[this.info.ID].Val = this.info.val
+                this.form.Series[this.currentTag].Param[this.info.ID].ID = this.info.ID
+            } else {
+                this.form.Series[this.currentTag].Param.push({
+                    Key: this.info.key,
+                    Val: this.info.val,
+                    ID: this.form.Series[this.currentTag].Param.length
+                })
+            }
             this.info.show = false
+        },
+        handleUpdateParam: function (row) {
+            this.info.show = true
+            this.info.key = row.Key
+            this.info.val = row.Val
+            this.info.ID = row.ID
         },
         /**
          * 删除简介内容

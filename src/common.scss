@@ -62,6 +62,10 @@ html, body {
     height: 400px !important;
 }
 
+.el-tree--highlight-current .el-tree-node.is-current>.el-tree-node__content {
+  background-color: #6dc !important;
+}
+
 .quill-editor >>> .ql-container {
     min-height: 300px;
   }

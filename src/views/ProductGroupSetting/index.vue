@@ -61,7 +61,7 @@
             :modal="false"
             width="30%">
             <el-form :model="dialog.form" label-width="80px">
-                <el-form-item label="父级菜单">
+                <el-form-item label="产品分类">
                     <div style="height: 8px"></div>
                     <el-tree :data="tree" :default-checked-keys="currentNodeKey"
                         highlight-current
@@ -132,7 +132,7 @@ export default {
             },
             tree: [
                 {
-                    Name: '顶级类目',
+                    Name: '一级分类',
                     ID: 0
                 }
             ],
@@ -213,7 +213,9 @@ export default {
                         ParentID: 0,
                         ID: 0
                     }
-                    this.getTableData()
+                    this.getTableData(function () {
+                        window.location.reload()
+                    })
                 })
         },
         /**

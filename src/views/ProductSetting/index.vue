@@ -8,12 +8,12 @@
                 <el-table-column
                     prop="Title"
                     align="center"
-                    label="产品标题"
+                    label="产品名称"
                     />
                 <el-table-column
                     prop="SubTitle"
                     align="center"
-                    label="产品副标题"
+                    label="产品别名"
                 ></el-table-column>
                 <el-table-column
                     align="center"

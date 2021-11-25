@@ -50,6 +50,7 @@
         <el-dialog
             title="选择图片"
             :modal="false"
+            @close="handleCancel"
             :visible.sync="dialog.show"
             width="620px">
             <div class="cover" @click="handleClickInputFile" v-if="!form.Src">
@@ -173,6 +174,11 @@ export default {
                     .then(() => {
                         this.$message.success('上传 banner 成功')
                         this.$refs.banner.value = ''
+                        this.form = {
+                            Src: '',
+                            Alt: '',
+                            id: 0
+                        }
                         this.getTableList()
                         this.dialog.show = false
                     })
