@@ -55,8 +55,8 @@
             </el-form-item>
             <el-form-item label="系列">
                 <el-radio-group v-model="form.radio" style="margin-top: 13px;">
-                    <el-radio :label="1">单个产品</el-radio>
-                    <el-radio :label="2">多个产品</el-radio>
+                    <el-radio :label="1">单个系列</el-radio>
+                    <el-radio :label="2">多个系列</el-radio>
                 </el-radio-group>
             </el-form-item>
             <div class="tabs" v-if="form.radio == 2">
@@ -64,7 +64,7 @@
                     :key="index"
                     v-for="(tag, index) in form.Series"
                     closable
-                    ref="tag"
+                    :ref="`tag${ index }`"
                     :type="tag.Type"
                     :disable-transitions="false"
                     @click="handleClick(index)"
@@ -89,8 +89,8 @@
                         v-model="form.Series[currentTag].SeriesName" style="margin-top: 4px; width: 300px" />
                 </el-form-item>
                 <el-form-item label="产品简介">
-                    <el-input placeholder="请输入产品简介" size="small" type="textarea" :rows="6"
-                        v-model="form.Series[currentTag].Info" style="margin-top: 4px; width: 300px" />
+                    <el-input placeholder="请输入产品简介" size="small" type="textarea" :rows="8"
+                        v-model="form.Series[currentTag].Info" style="margin-top: 4px; width: 600px" />
                 </el-form-item>
                 <el-form-item label="淘宝地址">
                     <el-input placeholder="请输入淘宝地址" size="small"
@@ -213,7 +213,7 @@ export default {
             },
             treeShow: false,
             currentTag: 0,
-            dynamicTags: ['标签一', '标签二', '标签三'],
+            dynamicTags: [],
             inputVisible: false,
             inputValue: ''
         }
@@ -226,6 +226,18 @@ export default {
                 this.info.ID = null
             }
         },
+        'form.radio'(val) {
+            if (val == 1) {
+                this.form.Series = [{
+                        SeriesName: '默认系列名',
+                        Info: '',
+                        Taobao: '',
+                        Tmall: '',
+                        Param: [],
+                        Type: 'success'
+                    }]
+            }
+        }
     },
     created: function () {
         this.getProductList()
@@ -239,7 +251,13 @@ export default {
             this.currentTag = index
         },
         handleClose(tag) {
-            this.dynamicTags.splice(this.dynamicTags.indexOf(tag), 1);
+            let i
+            this.form.Series.forEach((item, index) => {
+                if (item.SeriesName === tag.SeriesName) i = index
+            })
+            if (typeof i == 'number') {
+                this.form.Series.splice(i, 1)
+            }
         },
         showInput() {
             this.inputVisible = true;
@@ -260,6 +278,9 @@ export default {
             }
             this.inputVisible = false;
             this.inputValue = '';
+            this.$nextTick(() => {
+
+            })
         },
         /**
          * 删除 swiepr 图片

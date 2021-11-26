@@ -54,7 +54,7 @@
                             :current-page="table.current"
                             @current-change="handleChangePage"
                             layout="prev, pager, next"
-                            :total="table.total * 10">
+                            :total="table.total">
                         </el-pagination>
                     </div>
                 </div>

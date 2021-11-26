@@ -370,10 +370,12 @@ export default {
         }
     }
     .news-content {
-        width: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
+        width: calc(100% - 220px);
+        height: calc(100% - 50px);
+        overflow: auto;
+        position: fixed;
+        top: 50px;
+        left: 220px;
         z-index: 2;
         background-color: #fff;
         box-sizing: border-box;
