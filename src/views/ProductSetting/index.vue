@@ -16,6 +16,11 @@
                     label="产品别名"
                 ></el-table-column>
                 <el-table-column
+                    prop="Category"
+                    align="center"
+                    label="分类"
+                ></el-table-column>
+                <el-table-column
                     align="center"
                     label="产品封面"
                 >
@@ -50,6 +55,14 @@
                     </template>
                 </el-table-column>
             </el-table>
+            <div class="floor" style="margin-top: 20px; text-align: right;">
+                <el-pagination
+                    background
+                    @current-change="handleChange"
+                    layout="prev, pager, next"
+                    :total="table.total">
+                </el-pagination>
+            </div>
         </div>
         <el-dialog
             title="提示"
@@ -178,6 +191,10 @@ export default {
          */
         handleToCreate() {
             this.$router.push({ name: 'ProductSettingDetail' })
+        },
+        handleChange(val) {
+            this.table.current = val
+            this.getProductList()
         },
         /**
          * 获取产品列表
