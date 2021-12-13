@@ -13,7 +13,7 @@
                         <el-form-item label="ICP:">
                             <el-input v-model="form.ICP" size="small" class="input-width" placeholder="请输入网站网址" />
                         </el-form-item>
-                        <el-form-item label="Icon:">
+                        <!-- <el-form-item label="Icon:">
                             <div class="cover" @click="handleClickInput('Icon')" v-if="!form.Icon">
                                 <i class="el-icon-plus"></i>
                             </div>
@@ -22,7 +22,7 @@
                                 <el-button @click="handleDeleteImage('Icon')" class="delete" type="danger" size="small" icon="el-icon-delete" circle></el-button>
                             </div>
                             <input @change="handleChangeFile('Icon')" type="file" accept="image/*" ref="Icon" style="display: none;" />
-                        </el-form-item>
+                        </el-form-item> -->
                         <el-form-item label="Logo(亮):">
                             <div class="cover" @click="handleClickInput('LogoLight')" v-if="!form.LogoLight">
                                 <i class="el-icon-plus"></i>
