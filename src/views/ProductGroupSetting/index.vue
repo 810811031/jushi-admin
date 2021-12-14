@@ -85,6 +85,7 @@
             <el-form :model="dialogSeo.form" label-width="100px">
                 <el-form-item label="关键字">
                     <el-input size="small" placeholder="关键字" v-model="dialogSeo.form.SeoKeyword" />
+                    <p style="color: #999;">tip: 如有多个关键字可用逗号隔开</p>
                 </el-form-item>
                 <el-form-item label="关键字描述">
                     <el-input size="small" placeholder="关键字描述" v-model="dialogSeo.form.SeoDescription" />

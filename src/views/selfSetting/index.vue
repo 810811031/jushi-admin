@@ -90,6 +90,7 @@
                     </el-form-item>
                     <el-form-item label="SEO关键字">
                         <el-input v-model="dialog.form.SeoKeyword" size="small" style="width: 300px" placeholder="请输入关键字" />
+                        <p style="color: #999;">tip: 如有多个关键字可用逗号隔开</p>
                     </el-form-item>
                     <el-form-item label="关键字描述">
                         <el-input v-model="dialog.form.SeoDescription" size="small" type="textarea" :rows="5" style="width: 300px" placeholder="请输入关键描述" />
@@ -110,6 +111,7 @@
             <el-form :model="seo.form">
                 <el-form-item label="SEO关键字">
                     <el-input v-model="seo.form.SeoKeyword" size="small" style="width: 300px" placeholder="请输入关键字" />
+                    <p style="color: #999;">tip: 如有多个关键字可用逗号隔开</p>
                 </el-form-item>
                 <el-form-item label="关键字描述">
                     <el-input v-model="seo.form.SeoDescription" size="small" type="textarea" :rows="5" style="width: 300px" placeholder="请输入关键字描述" />

@@ -54,6 +54,7 @@
                     <el-form v-model="form" label-width="100px">
                         <el-form-item label="网站关键字:">
                             <el-input v-model="form.SeoKeyword" size="small" class="input-width" placeholder="请输入网站关键字" />
+                            <p style="color: #999;">tip: 如有多个关键字可用逗号隔开</p>
                         </el-form-item>
                         <el-form-item label="关键字描述:">
                             <el-input type="textarea" :rows="5" v-model="form.SeoDescription" size="small" class="input-width" placeholder="请输入关键字描述" />
