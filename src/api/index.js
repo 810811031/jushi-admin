@@ -514,3 +514,12 @@ export function deleteModels(id) {
 export function getProductDetail(id) {
     return axios.get(host + '/manage/product-detail/' + id)
 }
+
+/**
+ * 上传图片
+ * @param {*} base64Str 
+ * @returns 
+ */
+export function updateImg (base64Str) {
+    return axios.post(host + '/manage/img', { Img: base64Str })
+}

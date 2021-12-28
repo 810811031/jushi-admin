@@ -52,10 +52,10 @@
                         <el-input v-model="form.title" size="small" style="width: 300px" placeholder="请输入岗位名称" />
                     </el-form-item>
                     <el-form-item label="岗位内容">
-                        <!-- <div id="editor" style="width: calc(100% - 30px)" v-loading="form.loading"></div> -->
-                        <quill-editor
+                        <div id="editor" style="width: calc(100% - 10px); height: 600px"></div>
+                        <!-- <quill-editor
                                 v-model="form.content"
-                                />
+                                /> -->
                     </el-form-item>
                 </el-form>
                 <div class="btns" style="text-align: center;padding-top: 20px">
@@ -69,7 +69,8 @@
 </template>
 
 <script>
-import { getOffers, createOffers, updateOffers, deleteOffers } from '@/api'
+import { getOffers, createOffers, updateOffers, deleteOffers, updateImg } from '@/api'
+import Editor from 'wangeditor'
 
 export default {
     name: 'PAGE_JobSetting',
@@ -103,6 +104,26 @@ export default {
                 this.form.title = ''
                 return
             }
+            this.$nextTick(() => {
+                this.editor = new Editor('#editor')
+                const that = this
+                this.editor.config.height = 500
+                this.editor.config.customUploadImg = function (resultFiles, insertImgFn) {
+                    const file = resultFiles[0]
+                    let reader = new FileReader()
+                    reader.onload = () => {
+                        updateImg(reader.result).then(res => {
+                            let img = window.config.host + res.data
+                            insertImgFn(img)
+                        })
+                    }
+                    reader.readAsDataURL(file)
+                }
+                this.editor.create()
+                this.editor.config.onchange = function (newHtml) {
+                    that.form.content = newHtml            
+                }
+            })
         }
     },
     methods: {
@@ -210,13 +231,14 @@ export default {
         }
     }
     .createJob {
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        z-index: 2;
+        width: calc(100% - 220px);
+        height: calc(100% - 50px);
         background-color: #fff;
+        overflow: auto;
+        position: fixed;
+        top: 50px;
+        right: 0;
+        z-index: 9;
         box-sizing: border-box;
         padding: 20px;
     }

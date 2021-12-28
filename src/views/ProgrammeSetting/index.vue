@@ -86,8 +86,8 @@
                         </div>
                         <input type="file" ref="file" accept="image/*" @change="handleInputChange" style="display: none;" />
                     </el-form-item>
-                    <el-form-item label="内容">
-                        <div id="editor" style="width: calc(100% - 30px)"></div>
+                    <el-form-item label="内容" style="position: relation">
+                        <div id="editor" style="width: calc(100% - 10px); height: 600px"></div>
                     </el-form-item>
                     <el-form-item label="SEO关键字">
                         <el-input v-model="dialog.form.SeoKeyword" size="small" style="width: 300px" placeholder="请输入关键字" />
@@ -98,7 +98,7 @@
                 </el-form>
                 <div class="btns" style="text-align: center;padding-top: 20px">
                     <el-button size="small" @click="handleCancel">取消</el-button>
-                    <el-button @click="handleCreate" type="primary" size="small">发布</el-button>
+                    <el-button @click="handleCreate" :loading="updateLoading" type="primary" size="small">发布</el-button>
                 </div>
             </div>
         </transition>
@@ -135,7 +135,8 @@ import {
     updateProgramSeo, 
     updateProgram, 
     updateProgramIndex,
-    getImageBase64 
+    getImageBase64,
+    updateImg 
 } from '@/api'
 
 export default {
@@ -170,11 +171,13 @@ export default {
                     SeoDescription: ''
                 }
             },
-            editor: ''
+            editor: '',
+            updateLoading: false
         }
     },
     created: function () {
         this.getTableData()
+        console.log(window.config.host)
     },
     watch: {
         'dialog.show'(val) {
@@ -182,6 +185,18 @@ export default {
             this.$nextTick(() => {
                 this.editor = new Editor('#editor')
                 const that = this
+                this.editor.config.height = 500
+                this.editor.config.customUploadImg = function (resultFiles, insertImgFn) {
+                    const file = resultFiles[0]
+                    let reader = new FileReader()
+                    reader.onload = () => {
+                        updateImg(reader.result).then(res => {
+                            let img = window.config.host + res.data
+                            insertImgFn(img)
+                        })
+                    }
+                    reader.readAsDataURL(file)
+                }
                 this.editor.create()
                 this.editor.config.onchange = function (newHtml) {
                     that.dialog.form.Txt = newHtml            
@@ -319,6 +334,7 @@ export default {
          * 创建解决方案
          */
         handleCreate: async function () {
+            this.updateLoading = true
             if (this.dialog.form.ID) {
                 this.dialog.form.Cover = await getImageBase64(this.dialog.form.Cover)
                 updateProgram(this.dialog.form.ID, this.dialog.form)
@@ -326,6 +342,7 @@ export default {
                         this.$message.success(res.data)
                         this.dialog.show = false
                         this.getTableData()
+                        this.updateLoading = false
                     })
             } else {
                 createProgram(this.dialog.form)
@@ -333,6 +350,7 @@ export default {
                         this.$message.success(res.data)
                         this.dialog.show = false
                         this.getTableData()
+                        this.updateLoading = false
                     })
             }
         },
@@ -432,6 +450,11 @@ export default {
                 max-height: 130px;
             }
         }
+    }
+    .updateImg {
+        position: absolute;
+        right: 0px;
+        top: 0;
     }
 }
 </style>

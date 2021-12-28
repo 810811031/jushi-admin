@@ -83,9 +83,10 @@
                     </el-form-item>
                     <el-form-item label="内容">
                         <div class="txt_content">
-                            <quill-editor
+                            <div id="editor" style="width: calc(100% - 10px); height: 600px"></div>
+                            <!-- <quill-editor
                                 v-model="dialog.form.Txt"
-                                />
+                                /> -->
                         </div>
                     </el-form-item>
                     <el-form-item label="SEO关键字">
@@ -126,6 +127,7 @@
 </template>
 
 <script>
+import Editor from 'wangeditor'
 import {
     getMenuList,
     getCases,
@@ -135,7 +137,8 @@ import {
     clone,
     updateCases,
     createCases,
-    updateCasesSeo
+    updateCasesSeo,
+    updateImg
 } from '@/api'
 
 export default {
@@ -182,6 +185,29 @@ export default {
             let id = this.tabs[val].ID
             this.activeId = id
             this.getTableList()
+        },
+        'dialog.show'(val) {
+            if (!val) return
+            this.$nextTick(() => {
+                this.editor = new Editor('#editor')
+                const that = this
+                this.editor.config.height = 500
+                this.editor.config.customUploadImg = function (resultFiles, insertImgFn) {
+                    const file = resultFiles[0]
+                    let reader = new FileReader()
+                    reader.onload = () => {
+                        updateImg(reader.result).then(res => {
+                            let img = window.config.host + res.data
+                            insertImgFn(img)
+                        })
+                    }
+                    reader.readAsDataURL(file)
+                }
+                this.editor.create()
+                this.editor.config.onchange = function (newHtml) {
+                    that.dialog.form.Txt = newHtml            
+                }
+            })
         }
     },
     methods: {
@@ -201,6 +227,9 @@ export default {
                 Title, Txt, Cover, SeoKeyword, SeoDescription, ID
             }
             this.dialog.show = true
+            setTimeout(() => {
+                this.editor.txt.html(row.Txt)
+            }, 200)
         },
         /**
          * 配置 Seo 
